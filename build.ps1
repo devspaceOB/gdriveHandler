@@ -72,6 +72,7 @@ if (-not $SelfContainedOnly) {
     Write-Host "`nPublishing framework-dependent (win-x64)..." -ForegroundColor Cyan
     $fdPublish = Join-Path $root "src\gdriveHandler\bin\$Configuration\$tfm\win-x64-fd\publish"
     & dotnet publish $proj -c $Configuration -r win-x64 --self-contained false `
+        -p:WindowsAppSDKSelfContained=false `
         -p:PublishSingleFile=true `
         -o $fdPublish `
         --nologo

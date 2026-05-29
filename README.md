@@ -143,8 +143,8 @@ gdriveHandler --help               Show usage
 
 | File | Size | Requirements |
 |------|------|--------------|
-| `gdriveHandler-x64.exe` | ~150 MB | Windows 10 1809+ / Windows 11 x64 — **nothing else needed** |
-| `gdriveHandler-x64-fd.exe` | ~5 MB | [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) + [Windows App SDK 2.0](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads) |
+| `gdriveHandler-x64.exe` | ~85 MB | Windows 10 1809+ / Windows 11 x64 — **nothing else needed** |
+| `gdriveHandler-x64-fd.exe` | ~79 MB | [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) + [Windows App SDK 2.0](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads) |
 
 The self-contained build is recommended for most users. The framework-dependent build is useful in managed environments where the runtimes are already deployed.
 
