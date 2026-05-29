@@ -73,7 +73,6 @@ if (-not $SelfContainedOnly) {
     $fdPublish = Join-Path $root "src\gdriveHandler\bin\$Configuration\$tfm\win-x64-fd\publish"
     & dotnet publish $proj -c $Configuration -r win-x64 --self-contained false `
         -p:PublishSingleFile=true `
-        -p:EnableCompressionInSingleFile=true `
         -o $fdPublish `
         --nologo
     if ($LASTEXITCODE -ne 0) { throw "framework-dependent publish failed" }
