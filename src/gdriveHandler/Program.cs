@@ -30,6 +30,13 @@ internal static class Program
 
     private static ExitCode Run(string[] args, Logger log)
     {
+        var activatedFile = TryGetPackagedFileActivation(log);
+        if (!string.IsNullOrWhiteSpace(activatedFile))
+        {
+            log.Info("MSIX file activation: " + activatedFile);
+            return HandleFile(activatedFile, log);
+        }
+
         // No args → open the WinUI GUI (Home page).
         if (args.Length == 0)
         {
@@ -65,6 +72,37 @@ internal static class Program
         }
 
         return HandleFile(first, log);
+    }
+
+    private static string? TryGetPackagedFileActivation(Logger log)
+    {
+        if (!AppConstants.IsPackaged)
+        {
+            return null;
+        }
+
+        try
+        {
+            var activationArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
+            if (activationArgs.Kind != Microsoft.Windows.AppLifecycle.ExtendedActivationKind.File)
+            {
+                return null;
+            }
+
+            if (activationArgs.Data is not Windows.ApplicationModel.Activation.IFileActivatedEventArgs fileArgs ||
+                fileArgs.Files.Count == 0)
+            {
+                log.Warn("MSIX file activation arrived without a file payload.");
+                return null;
+            }
+
+            return fileArgs.Files[0].Path;
+        }
+        catch (Exception ex)
+        {
+            log.Warn("Could not read MSIX activation args: " + ex.Message);
+            return null;
+        }
     }
 
     // ----- GUI launcher (no-args / --settings) -----
@@ -223,6 +261,7 @@ internal static class Program
     {
         var sb = new StringBuilder();
         sb.AppendLine($"{AppConstants.DisplayName} {AppConstants.Version}  (publisher: {AppConstants.Publisher})");
+        sb.AppendLine($"Packaged      : {AppConstants.IsPackaged}");
         sb.AppendLine($"Installed exe : {AppConstants.InstalledExePath}  (exists: {File.Exists(AppConstants.InstalledExePath)})");
         sb.AppendLine($"Log file      : {AppConstants.LogFile}");
         sb.AppendLine($"Config file   : {AppConstants.ConfigFile}  (exists: {File.Exists(AppConstants.ConfigFile)})");

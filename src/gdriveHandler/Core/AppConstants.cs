@@ -21,7 +21,7 @@ internal enum ExitCode
 
 /// <summary>
 /// Central, dependency-free configuration: identity, supported extensions,
-/// URL templates, and per-user install/log locations.
+/// URL templates, install locations, and writable app data paths.
 /// </summary>
 internal static class AppConstants
 {
@@ -67,15 +67,32 @@ internal static class AppConstants
     private static string ProgramFilesDir =>
         Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
-    // User-level install: exe, config, and logs all under one folder tree
+    public static bool IsPackaged
+    {
+        get
+        {
+            try
+            {
+                _ = Windows.ApplicationModel.Package.Current.Id.FullName;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
+    // User-level legacy install path for the unpackaged folder/zip channel.
     public static string InstallDir => Path.Combine(LocalAppData, "Programs", AppId);
     public static string InstalledExePath => Path.Combine(InstallDir, AppId + ".exe");
 
-    /// <summary>config.ini lives in the same folder as the installed exe.</summary>
-    public static string ConfigFile => Path.Combine(InstallDir, "config.ini");
+    /// <summary>Writable app data lives outside the install directory for MSIX and zip installs.</summary>
+    public static string DataDir => Path.Combine(LocalAppData, AppId);
 
-    /// <summary>Log files are in a subfolder of the install directory.</summary>
-    public static string LogDir => Path.Combine(InstallDir, "logs");
+    public static string ConfigFile => Path.Combine(DataDir, "config.ini");
+
+    public static string LogDir => Path.Combine(DataDir, "logs");
 
     public static string LogFile => Path.Combine(LogDir, "launcher.log");
 

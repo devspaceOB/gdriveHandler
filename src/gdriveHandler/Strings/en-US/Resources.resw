@@ -95,6 +95,12 @@
   <data name="HomeStatusInstalledSystem" xml:space="preserve">
     <value>Installed (system-wide)</value>
   </data>
+  <data name="HomeStatusManaged" xml:space="preserve">
+    <value>Installed (managed by Windows)</value>
+  </data>
+  <data name="HomeStatusManagedDetail" xml:space="preserve">
+    <value>File associations and uninstall are managed by the MSIX package.</value>
+  </data>
   <data name="HomeStatusNotInstalled" xml:space="preserve">
     <value>Not installed</value>
   </data>
@@ -180,6 +186,12 @@
   <data name="AdvSetupTitle.Text" xml:space="preserve">
     <value>Setup &amp; Management</value>
   </data>
+  <data name="AdvManagedByWindows.Text" xml:space="preserve">
+    <value>This MSIX install is managed by Windows. File associations are declared by the package, and uninstall/repair is handled in Windows Settings.</value>
+  </data>
+  <data name="AdvBtnOpenAppsSettings.Content" xml:space="preserve">
+    <value>Open Windows Apps settings</value>
+  </data>
   <data name="AdvBtnInstallUser.Content" xml:space="preserve">
     <value>Install for me</value>
   </data>
@@ -257,6 +269,9 @@
   </data>
   <data name="AdvOpenLogsFailed" xml:space="preserve">
     <value>Could not open logs folder: </value>
+  </data>
+  <data name="AdvOpenAppsSettingsFailed" xml:space="preserve">
+    <value>Could not open Windows Apps settings: </value>
   </data>
   <data name="AdvDiagnosticsTitle" xml:space="preserve">
     <value>Diagnostics</value>
@@ -406,6 +421,9 @@ gdriveHandler will then route files with the old address to your current profile
   <!-- Advanced paths labels (code-behind) -->
   <data name="AdvPathInstallDir" xml:space="preserve">
     <value>Install dir</value>
+  </data>
+  <data name="AdvPathDataDir" xml:space="preserve">
+    <value>Data dir</value>
   </data>
   <data name="AdvPathConfigFile" xml:space="preserve">
     <value>Config file</value>

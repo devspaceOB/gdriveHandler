@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+
+  <Identity
+    Name="devSpaceOB.gdriveHandler"
+    Publisher="CN=devSpaceOB"
+    Version="1.1.0.0" />
+
+  <Properties>
+    <DisplayName>gdriveHandler</DisplayName>
+    <PublisherDisplayName>devSpaceOB</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Resources>
+    <Resource Language="en-US" />
+    <Resource Language="tr-TR" />
+  </Resources>
+
+  <Dependencies>
+    <TargetDeviceFamily
+      Name="Windows.Desktop"
+      MinVersion="10.0.22000.0"
+      MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Applications>
+    <Application
+      Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+        DisplayName="gdriveHandler"
+        Description="Open Google Workspace shortcuts in the matching browser profile."
+        BackgroundColor="transparent"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Square150x150Logo="Assets\Square150x150Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="gdrivehandler">
+            <uap:DisplayName>Google Workspace Shortcut</uap:DisplayName>
+            <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.gdoc</uap:FileType>
+              <uap:FileType>.gsheet</uap:FileType>
+              <uap:FileType>.gslides</uap:FileType>
+              <uap:FileType>.gdraw</uap:FileType>
+              <uap:FileType>.gform</uap:FileType>
+              <uap:FileType>.gscript</uap:FileType>
+              <uap:FileType>.gmap</uap:FileType>
+              <uap:FileType>.glink</uap:FileType>
+              <uap:FileType>.gsite</uap:FileType>
+              <uap:FileType>.gtable</uap:FileType>
+              <uap:FileType>.gjam</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

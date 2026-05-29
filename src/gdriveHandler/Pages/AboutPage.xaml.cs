@@ -16,6 +16,7 @@ public sealed partial class AboutPage : Page
     {
         PathsPanel.Children.Clear();
         AddPathRow(Loc.Get("AdvPathInstallDir"), AppConstants.InstallDir);
+        AddPathRow(Loc.Get("AdvPathDataDir"), AppConstants.DataDir);
         AddPathRow(Loc.Get("AdvPathConfigFile"), AppConstants.ConfigFile);
         AddPathRow(Loc.Get("AdvPathLogFile"), AppConstants.LogFile);
         AddPathRow(Loc.Get("AdvPathSystemDir"), AppConstants.SystemInstallDir);

@@ -39,6 +39,11 @@ internal static class Installer
 
     public static ExitCode Install(Logger log, bool systemWide = false)
     {
+        if (AppConstants.IsPackaged)
+        {
+            return WindowsManagedInstall("install", log);
+        }
+
         if (systemWide)
         {
             return InstallSystem(log);
@@ -50,12 +55,40 @@ internal static class Installer
     /// <summary>Re-register everything; idempotent.</summary>
     public static ExitCode Repair(Logger log)
     {
+        if (AppConstants.IsPackaged)
+        {
+            return WindowsManagedInstall("repair", log);
+        }
+
         return Install(log, systemWide: AppConstants.IsSystemInstall);
     }
 
     public static ExitCode Uninstall(Logger log)
     {
+        if (AppConstants.IsPackaged)
+        {
+            return WindowsManagedInstall("uninstall", log);
+        }
+
         return AppConstants.IsSystemInstall ? UninstallSystem(log) : UninstallUser(log);
+    }
+
+    public static void OpenWindowsAppsSettings()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "ms-settings:appsfeatures",
+            UseShellExecute = true,
+        });
+    }
+
+    private static ExitCode WindowsManagedInstall(string operation, Logger log)
+    {
+        log.Warn($"Ignoring legacy {operation}: packaged installs are managed by Windows.");
+        Ui.ShowInfo(
+            AppConstants.DisplayName,
+            "This MSIX install is managed by Windows. Use Windows Settings to modify or uninstall it.");
+        return ExitCode.InvalidArguments;
     }
 
     // ----- per-user install (HKCU, no elevation) -----

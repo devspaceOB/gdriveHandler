@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -23,26 +23,22 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore
-        run: dotnet restore src/gdriveHandler/gdriveHandler.csproj
-
-      - name: Run tests
-        run: dotnet test tests/gdriveHandler.Tests/gdriveHandler.Tests.csproj -c Release --nologo --no-restore
-
-      - name: Publish — self-contained folder
+      - name: Decode signing certificate
         shell: pwsh
+        env:
+          SIGNING_PFX_BASE64: ${{ secrets.SIGNING_PFX_BASE64 }}
         run: |
-          dotnet publish src/gdriveHandler/gdriveHandler.csproj `
-            -c Release -r win-x64 --self-contained true `
-            -o dist/gdriveHandler-x64 --nologo
-          if ($LASTEXITCODE -ne 0) { throw "publish failed" }
+          if ([string]::IsNullOrWhiteSpace($env:SIGNING_PFX_BASE64)) {
+            throw "SIGNING_PFX_BASE64 secret is required for signed MSIX releases."
+          }
+          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\cert.pfx", [Convert]::FromBase64String($env:SIGNING_PFX_BASE64))
 
-      - name: Zip release asset
+      - name: Build artifacts
         shell: pwsh
+        env:
+          SIGNING_PFX_PASSWORD: ${{ secrets.SIGNING_PFX_PASSWORD }}
         run: |
-          Compress-Archive -Path "dist/gdriveHandler-x64/*" -DestinationPath "dist/gdriveHandler-x64.zip" -Force
-          $zipSize = [math]::Round((Get-Item "dist/gdriveHandler-x64.zip").Length / 1MB, 1)
-          Write-Host "Release zip: $zipSize MB"
+          .\build.ps1 -PfxPath "$env:RUNNER_TEMP\cert.pfx" -PfxPassword "$env:SIGNING_PFX_PASSWORD"
 
       - name: Create release
         if: startsWith(github.ref, 'refs/tags/')
@@ -53,5 +49,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/gdriveHandler-x64.zip
+            dist/gdriveHandler-*-x64.msix
+            dist/gdriveHandler-*-x64.cer
+            dist/gdriveHandler-*-x64-selfcontained.zip
+            dist/gdriveHandler-*-x64-fd.exe
             install.ps1

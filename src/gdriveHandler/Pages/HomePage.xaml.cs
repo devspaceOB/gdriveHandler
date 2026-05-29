@@ -16,6 +16,14 @@ public sealed partial class HomePage : Page
 
     private void RefreshStatus()
     {
+        if (AppConstants.IsPackaged)
+        {
+            StatusTitle.Text = Loc.Get("HomeStatusManaged");
+            StatusDetail.Text = Loc.Get("HomeStatusManagedDetail");
+            BtnSetup.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+            return;
+        }
+
         var installed = File.Exists(AppConstants.InstalledExePath);
         var systemInstalled = File.Exists(AppConstants.SystemExePath);
 

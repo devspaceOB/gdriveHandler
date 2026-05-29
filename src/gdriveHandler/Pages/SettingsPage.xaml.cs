@@ -48,6 +48,7 @@ public sealed partial class SettingsPage : Page
 
             ApplyAdvancedVisibility(s.AdvancedMode);
             PopulatePaths();
+            ConfigureSetupManagement();
 
             // Start on General tab
             SubtabBar.SelectedItem = SubtabBar.Items[0];
@@ -211,6 +212,7 @@ public sealed partial class SettingsPage : Page
     {
         AdvPathsPanel.Children.Clear();
         AddPathRow(Loc.Get("AdvPathInstallDir"), AppConstants.InstallDir);
+        AddPathRow(Loc.Get("AdvPathDataDir"), AppConstants.DataDir);
         AddPathRow(Loc.Get("AdvPathConfigFile"), AppConstants.ConfigFile);
         AddPathRow(Loc.Get("AdvPathLogFile"), AppConstants.LogFile);
     }
@@ -248,6 +250,32 @@ public sealed partial class SettingsPage : Page
     // ------------------------------------------------------------------
     // Advanced — Setup & Management
     // ------------------------------------------------------------------
+
+    private void ConfigureSetupManagement()
+    {
+        var packaged = AppConstants.IsPackaged;
+        LegacySetupButtons.Visibility = packaged
+            ? Microsoft.UI.Xaml.Visibility.Collapsed
+            : Microsoft.UI.Xaml.Visibility.Visible;
+        AdvManagedByWindowsText.Visibility = packaged
+            ? Microsoft.UI.Xaml.Visibility.Visible
+            : Microsoft.UI.Xaml.Visibility.Collapsed;
+        AdvBtnOpenAppsSettings.Visibility = packaged
+            ? Microsoft.UI.Xaml.Visibility.Visible
+            : Microsoft.UI.Xaml.Visibility.Collapsed;
+    }
+
+    private async void AdvBtnOpenAppsSettings_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        try
+        {
+            Installer.OpenWindowsAppsSettings();
+        }
+        catch (Exception ex)
+        {
+            await ShowResultAsync(Loc.Get("AdvOpenAppsSettingsFailed") + ex.Message, success: false);
+        }
+    }
 
     private async void AdvBtnInstallUser_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
@@ -369,7 +397,9 @@ public sealed partial class SettingsPage : Page
         sb.AppendLine($"=== {AppConstants.DisplayName} {AppConstants.Version} ===");
         sb.AppendLine();
         sb.AppendLine("[Paths]");
+        sb.AppendLine($"  Packaged    : {AppConstants.IsPackaged}");
         sb.AppendLine($"  Install dir : {AppConstants.InstallDir}");
+        sb.AppendLine($"  Data dir    : {AppConstants.DataDir}");
         sb.AppendLine($"  Config file : {AppConstants.ConfigFile}  (exists: {File.Exists(AppConstants.ConfigFile)})");
         sb.AppendLine($"  Log file    : {AppConstants.LogFile}  (exists: {File.Exists(AppConstants.LogFile)})");
         sb.AppendLine();

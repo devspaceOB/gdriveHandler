@@ -2,22 +2,29 @@
 
 | File | Description |
 |------|-------------|
-| `gdriveHandler-x64.zip` | **Self-contained app (~84 MB download)** — bundles .NET 10 + Windows App SDK, no prerequisites. Runs on any Windows 10 (1809+) / 11 x64 machine. |
-| `install.ps1` | PowerShell silent installer (see Quick Install below) |
+| `gdriveHandler-<version>-x64.msix` | Primary installer package. Signed with the project self-signed certificate. |
+| `gdriveHandler-<version>-x64.cer` | Public certificate used by `install.ps1` before installing the MSIX. |
+| `gdriveHandler-<version>-x64-selfcontained.zip` | Portable fallback with .NET and Windows App SDK runtime files bundled. |
+| `gdriveHandler-<version>-x64-fd.exe` | Framework-dependent launcher asset for advanced/manual scenarios. |
+| `install.ps1` | PowerShell installer that prefers MSIX and falls back to the zip when needed. |
 
-## Quick Install (PowerShell)
+## Quick Install
 
 ```powershell
 irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install.ps1 | iex
 ```
 
+The MSIX install is managed by Windows. Uninstall from Windows Settings, or run:
+
+```powershell
+$s = irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install.ps1
+& ([scriptblock]::Create($s)) -Uninstall
+```
+
 ## Manual Install
 
-1. Download and extract `gdriveHandler-x64.zip`
-2. Run `gdriveHandler.exe --install` (or run `gdriveHandler.exe` and click **Install for me**)
+1. Download `gdriveHandler-<version>-x64.cer` and install it to Trusted People.
+2. Download and open `gdriveHandler-<version>-x64.msix`.
+3. If MSIX install is unavailable, use the self-contained zip fallback and run `gdriveHandler.exe --install`.
 
-Everything installs into one folder: `%LocalAppData%\Programs\gdriveHandler\`. Uninstall cleanly from **Settings → Apps**, or run `gdriveHandler.exe --uninstall`.
-
-## What's new
-
-See [ROADMAP.md](https://github.com/devspaceOB/gdriveHandler/blob/main/ROADMAP.md) for what's planned.
+Settings and aliases live under `%LOCALAPPDATA%\gdriveHandler\` and survive uninstall/reinstall.

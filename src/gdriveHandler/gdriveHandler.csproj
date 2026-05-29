@@ -13,7 +13,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
     <UseWinUI>true</UseWinUI>
-    <WindowsPackageType>None</WindowsPackageType>
     <!-- Disable auto-generated Main so Program.cs keeps the entry point -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <!-- Version / identity -->
@@ -26,6 +25,10 @@
          and DLLs together in one install folder is the supported, stable layout. -->
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <GenerateAppxPackageOnBuild Condition="'$(GenerateAppxPackageOnBuild)' == ''">false</GenerateAppxPackageOnBuild>
+    <AppxPackageSigningEnabled Condition="'$(AppxPackageSigningEnabled)' == ''">false</AppxPackageSigningEnabled>
+    <AppxBundle>Never</AppxBundle>
+    <UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
@@ -35,8 +38,26 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.8249" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.260518100" />
+    <PackageReference Include="System.Security.Permissions" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
+
+  <Target Name="PatchMsixBuildToolsPermissionsDependency"
+          BeforeTargets="BeforeGenerateAppxManifest"
+          Condition="'$(GenerateAppxPackageOnBuild)' == 'true'">
+    <!-- The current MSIX task assembly targets net6.0 but probes for this net8-era
+         dependency beside the task DLL under the .NET 10 SDK. Restore it from NuGet
+         and place it where the task host can resolve it on local and CI builds. -->
+    <PropertyGroup>
+      <_MsixTaskDependencySource>$(NuGetPackageRoot)system.security.permissions\8.0.0\lib\net6.0\System.Security.Permissions.dll</_MsixTaskDependencySource>
+      <_MsixTaskDependencyDestination>$(NuGetPackageRoot)microsoft.windows.sdk.buildtools.msix\1.7.260518100\tools\net6.0\System.Security.Permissions.dll</_MsixTaskDependencyDestination>
+    </PropertyGroup>
+    <Copy SourceFiles="$(_MsixTaskDependencySource)"
+          DestinationFiles="$(_MsixTaskDependencyDestination)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(_MsixTaskDependencySource)')" />
+  </Target>
 
   <!-- Localization resource files are auto-discovered from Strings\**\*.resw by the
        WinUI/WinAppSDK build targets (EnableDefaultPriItems=true by default).
@@ -45,6 +66,21 @@
   <!-- App logo PNG for use in XAML Image controls (title bar, Home hero, About) -->
   <ItemGroup>
     <Content Include="Assets\AppLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Square44x44Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Square150x150Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\StoreLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Wide310x150Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\SplashScreen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <!-- App.ico must also be copied to output so AppWindow.SetIcon (taskbar/thumbnail

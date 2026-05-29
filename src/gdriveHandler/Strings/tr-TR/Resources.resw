@@ -95,6 +95,12 @@
   <data name="HomeStatusInstalledSystem" xml:space="preserve">
     <value>Yüklü (tüm kullanıcılar için)</value>
   </data>
+  <data name="HomeStatusManaged" xml:space="preserve">
+    <value>Yüklü (Windows tarafından yönetiliyor)</value>
+  </data>
+  <data name="HomeStatusManagedDetail" xml:space="preserve">
+    <value>Dosya ilişkilendirmeleri ve kaldırma işlemi MSIX paketi tarafından yönetilir.</value>
+  </data>
   <data name="HomeStatusNotInstalled" xml:space="preserve">
     <value>Yüklü değil</value>
   </data>
@@ -180,6 +186,12 @@
   <data name="AdvSetupTitle.Text" xml:space="preserve">
     <value>Kurulum ve Yönetim</value>
   </data>
+  <data name="AdvManagedByWindows.Text" xml:space="preserve">
+    <value>Bu MSIX kurulumu Windows tarafından yönetilir. Dosya ilişkilendirmeleri paket tarafından tanımlanır; kaldırma ve onarma Windows Ayarları üzerinden yapılır.</value>
+  </data>
+  <data name="AdvBtnOpenAppsSettings.Content" xml:space="preserve">
+    <value>Windows Uygulama ayarlarını aç</value>
+  </data>
   <data name="AdvBtnInstallUser.Content" xml:space="preserve">
     <value>Benim için kur</value>
   </data>
@@ -257,6 +269,9 @@
   </data>
   <data name="AdvOpenLogsFailed" xml:space="preserve">
     <value>Günlük klasörü açılamadı: </value>
+  </data>
+  <data name="AdvOpenAppsSettingsFailed" xml:space="preserve">
+    <value>Windows Uygulama ayarları açılamadı: </value>
   </data>
   <data name="AdvDiagnosticsTitle" xml:space="preserve">
     <value>Tanılama</value>
@@ -406,6 +421,9 @@ gdriveHandler eski adresi taşıyan dosyaları güncel profiline yönlendirir.</
   <!-- Advanced paths labels (code-behind) -->
   <data name="AdvPathInstallDir" xml:space="preserve">
     <value>Kurulum klasörü</value>
+  </data>
+  <data name="AdvPathDataDir" xml:space="preserve">
+    <value>Veri klasörü</value>
   </data>
   <data name="AdvPathConfigFile" xml:space="preserve">
     <value>Yapılandırma dosyası</value>
