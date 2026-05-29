@@ -25,7 +25,7 @@
          pass -p:PublishSingleFile=true only at dotnet publish time via build.ps1) -->
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <EnableMsixTooling>false</EnableMsixTooling>
+    <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
