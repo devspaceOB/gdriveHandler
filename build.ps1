@@ -4,18 +4,19 @@
     Builds release artifacts for gdriveHandler.
 
 .DESCRIPTION
-    Produces a signed MSIX when -PfxPath is supplied, plus the portable
-    self-contained zip fallback and a small framework-dependent exe.
+    Produces the portable self-contained zip and a small framework-dependent exe.
+    MSIX packaging is retained for later but hidden behind -IncludeMsix.
 
 .EXAMPLE
     pwsh build.ps1
-    pwsh build.ps1 -SkipTests -PfxPath .\cert.pfx -PfxPassword $env:SIGNING_PFX_PASSWORD
+    pwsh build.ps1 -SkipTests
+    pwsh build.ps1 -IncludeMsix -PfxPath .\cert.pfx -PfxPassword $env:SIGNING_PFX_PASSWORD
 #>
 [CmdletBinding()]
 param(
     [string]$Configuration = "Release",
     [switch]$SkipTests,
-    [switch]$SkipMsix,
+    [switch]$IncludeMsix,
     [string]$PfxPath,
     [string]$PfxPassword
 )
@@ -160,7 +161,7 @@ if (Test-Path $fdPublishedExe) {
     Write-Host "Framework-dependent exe was not produced; skipping fd asset." -ForegroundColor Yellow
 }
 
-if (-not $SkipMsix) {
+if ($IncludeMsix) {
     Write-Host "Publishing MSIX..." -ForegroundColor Cyan
     Invoke-Native dotnet @(
         "publish", $proj,
@@ -181,6 +182,8 @@ if (-not $SkipMsix) {
 
     Copy-Item $builtMsix.FullName $msixPath -Force
     Sign-Msix $msixPath
+} else {
+    Write-Host "MSIX packaging skipped. Use -IncludeMsix for internal package builds." -ForegroundColor Yellow
 }
 
 $artifacts = Get-ChildItem $dist -File | Where-Object {

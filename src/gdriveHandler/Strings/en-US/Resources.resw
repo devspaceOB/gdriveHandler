@@ -140,6 +140,18 @@
   <data name="HomeInstallFailed" xml:space="preserve">
     <value>Installation failed. Check the log for details.</value>
   </data>
+  <data name="InstallPromptTitle" xml:space="preserve">
+    <value>Install gdriveHandler?</value>
+  </data>
+  <data name="InstallPromptContent" xml:space="preserve">
+    <value>gdriveHandler is running from a portable folder. Install it for this user to register Google Workspace file associations and launch from the installed location.</value>
+  </data>
+  <data name="InstallPromptInstall" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="InstallPromptCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 
   <!-- Settings page — General subtab -->
   <data name="SettingsTitle.Text" xml:space="preserve">

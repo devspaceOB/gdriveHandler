@@ -23,22 +23,9 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Decode signing certificate
-        shell: pwsh
-        env:
-          SIGNING_PFX_BASE64: ${{ secrets.SIGNING_PFX_BASE64 }}
-        run: |
-          if ([string]::IsNullOrWhiteSpace($env:SIGNING_PFX_BASE64)) {
-            throw "SIGNING_PFX_BASE64 secret is required for signed MSIX releases."
-          }
-          [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\cert.pfx", [Convert]::FromBase64String($env:SIGNING_PFX_BASE64))
-
       - name: Build artifacts
         shell: pwsh
-        env:
-          SIGNING_PFX_PASSWORD: ${{ secrets.SIGNING_PFX_PASSWORD }}
-        run: |
-          .\build.ps1 -PfxPath "$env:RUNNER_TEMP\cert.pfx" -PfxPassword "$env:SIGNING_PFX_PASSWORD"
+        run: .\build.ps1
 
       - name: Create release
         if: startsWith(github.ref, 'refs/tags/')
@@ -49,8 +36,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/gdriveHandler-*-x64.msix
-            dist/gdriveHandler-*-x64.cer
             dist/gdriveHandler-*-x64-selfcontained.zip
             dist/gdriveHandler-*-x64-fd.exe
             install.ps1

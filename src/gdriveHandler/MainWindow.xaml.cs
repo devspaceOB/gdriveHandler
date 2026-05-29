@@ -11,6 +11,7 @@ namespace GdriveHandler;
 public sealed partial class MainWindow : Window
 {
     private readonly string _initialPage;
+    private bool _installPromptShown;
     private MicaController? _micaController;
     private SystemBackdropConfiguration? _backdropConfig;
 
@@ -166,6 +167,8 @@ public sealed partial class MainWindow : Window
         {
             NavView.SelectedItem = item;
         }
+
+        DispatcherQueue.TryEnqueue(async () => await ShowFirstLaunchInstallPromptAsync());
     }
 
     private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -188,5 +191,49 @@ public sealed partial class MainWindow : Window
             _          => typeof(Pages.HomePage),
         };
         ContentFrame.Navigate(pageType);
+    }
+
+    private async System.Threading.Tasks.Task ShowFirstLaunchInstallPromptAsync()
+    {
+        if (_installPromptShown ||
+            AppConstants.IsPackaged ||
+            _initialPage != "home" ||
+            Installer.IsUserInstallHealthy())
+        {
+            return;
+        }
+
+        _installPromptShown = true;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = Content.XamlRoot,
+            Title = Loc.Get("InstallPromptTitle"),
+            Content = Loc.Get("InstallPromptContent"),
+            PrimaryButtonText = Loc.Get("InstallPromptInstall"),
+            CloseButtonText = Loc.Get("InstallPromptCancel"),
+            DefaultButton = ContentDialogButton.Primary,
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        var code = Installer.InstallUserAndLaunchInstalledCopy(_log);
+        if (code == ExitCode.Success)
+        {
+            Application.Current.Exit();
+            return;
+        }
+
+        var errorDialog = new ContentDialog
+        {
+            XamlRoot = Content.XamlRoot,
+            Title = Loc.Get("DialogError"),
+            Content = Loc.Get("HomeInstallFailed"),
+            CloseButtonText = Loc.Get("DialogOK"),
+        };
+        await errorDialog.ShowAsync();
     }
 }

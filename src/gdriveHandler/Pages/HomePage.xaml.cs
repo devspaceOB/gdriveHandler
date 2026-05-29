@@ -24,7 +24,7 @@ public sealed partial class HomePage : Page
             return;
         }
 
-        var installed = File.Exists(AppConstants.InstalledExePath);
+        var installed = Installer.IsUserInstallHealthy();
         var systemInstalled = File.Exists(AppConstants.SystemExePath);
 
         if (installed)
@@ -50,12 +50,14 @@ public sealed partial class HomePage : Page
     private async void BtnSetup_Click(object sender, RoutedEventArgs e)
     {
         var log = new Logger();
-        var code = Installer.Install(log, systemWide: false);
-        await ShowResultAsync(
-            code == ExitCode.Success
-                ? Loc.Get("HomeInstallSuccess")
-                : Loc.Get("HomeInstallFailed"),
-            code == ExitCode.Success);
+        var code = Installer.InstallUserAndLaunchInstalledCopy(log);
+        if (code == ExitCode.Success)
+        {
+            Application.Current.Exit();
+            return;
+        }
+
+        await ShowResultAsync(Loc.Get("HomeInstallFailed"), success: false);
         RefreshStatus();
     }
 

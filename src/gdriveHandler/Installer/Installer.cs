@@ -73,6 +73,57 @@ internal static class Installer
         return AppConstants.IsSystemInstall ? UninstallSystem(log) : UninstallUser(log);
     }
 
+    public static bool IsUserInstallHealthy()
+    {
+        var registrations = ReadUserExtensionRegistrations();
+        return IsInstallHealthy(File.Exists(AppConstants.InstalledExePath), registrations);
+    }
+
+    internal static bool IsInstallHealthy(bool installedExeExists, IReadOnlyDictionary<string, string?> registrations)
+    {
+        if (!installedExeExists)
+        {
+            return false;
+        }
+
+        foreach (var ext in AppConstants.AllExtensions)
+        {
+            if (!registrations.TryGetValue(ext, out var progId) ||
+                !string.Equals(progId, AppConstants.ProgId, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static ExitCode InstallUserAndLaunchInstalledCopy(Logger log)
+    {
+        var code = Install(log, systemWide: false);
+        if (code != ExitCode.Success)
+        {
+            return code;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = AppConstants.InstalledExePath,
+                UseShellExecute = true,
+            });
+            return ExitCode.Success;
+        }
+        catch (Exception ex)
+        {
+            log.Error($"Could not launch installed copy: {ex}");
+            Ui.ShowError("Installation completed, but the installed app could not be launched." +
+                Environment.NewLine + Environment.NewLine + ex.Message);
+            return ExitCode.InstallFailed;
+        }
+    }
+
     public static void OpenWindowsAppsSettings()
     {
         Process.Start(new ProcessStartInfo
@@ -89,6 +140,20 @@ internal static class Installer
             AppConstants.DisplayName,
             "This MSIX install is managed by Windows. Use Windows Settings to modify or uninstall it.");
         return ExitCode.InvalidArguments;
+    }
+
+    private static IReadOnlyDictionary<string, string?> ReadUserExtensionRegistrations()
+    {
+        var result = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        using var classes = Registry.CurrentUser.OpenSubKey(ClassesRoot);
+
+        foreach (var ext in AppConstants.AllExtensions)
+        {
+            using var extKey = classes?.OpenSubKey(ext);
+            result[ext] = extKey?.GetValue(null) as string;
+        }
+
+        return result;
     }
 
     // ----- per-user install (HKCU, no elevation) -----

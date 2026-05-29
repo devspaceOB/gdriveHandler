@@ -140,6 +140,18 @@
   <data name="HomeInstallFailed" xml:space="preserve">
     <value>Yükleme başarısız. Ayrıntılar için günlüğe bak.</value>
   </data>
+  <data name="InstallPromptTitle" xml:space="preserve">
+    <value>gdriveHandler kurulsun mu?</value>
+  </data>
+  <data name="InstallPromptContent" xml:space="preserve">
+    <value>gdriveHandler taşınabilir bir klasörden çalışıyor. Google Workspace dosya ilişkilendirmelerini kaydetmek ve kurulu konumdan başlatmak için bu kullanıcıya kur.</value>
+  </data>
+  <data name="InstallPromptInstall" xml:space="preserve">
+    <value>Kur</value>
+  </data>
+  <data name="InstallPromptCancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
 
   <!-- Settings page — General subtab -->
   <data name="SettingsTitle.Text" xml:space="preserve">

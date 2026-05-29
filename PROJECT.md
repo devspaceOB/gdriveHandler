@@ -3,7 +3,7 @@
 > **Single source of truth for this project.** This document captures the goals, architecture, tech stack, build/deploy process, hard-won gotchas, and changelog. It is detailed enough to rebuild a near-identical project from scratch, and to onboard future iteration.
 
 - **Repo:** https://github.com/devspaceOB/gdriveHandler
-- **Current version:** 1.1.0
+- **Current version:** 1.1.5
 - **Author / publisher:** devSpaceOB (devspaceob@gmail.com)
 - **License:** Personal Use (free for personal, non-commercial use) — see [LICENSE](LICENSE)
 - **Platform:** Windows 10 (1809+) / Windows 11, x64
@@ -37,15 +37,15 @@ It also provides a **WinUI 3 settings GUI** for installation, email-alias manage
 |-------|--------|-------|
 | Language | C# 13 (`LangVersion=latest`) | |
 | Runtime | .NET 10 (`net10.0-windows10.0.26100.0`) | Pinned via `global.json` (`10.0.300`) |
-| UI framework | WinUI 3 / Windows App SDK **2.0.1** | MSIX primary; portable build passes `WindowsPackageType=None` |
+| UI framework | WinUI 3 / Windows App SDK **2.0.1** | Zip/IRM primary; MSIX support is dormant/hidden |
 | Build tools | Microsoft.Windows.SDK.BuildTools `10.0.26100.8249` + MSIX `1.7.260518100` | |
 | Min OS | `TargetPlatformMinVersion=10.0.22000.0` | Win11; runs on Win10 1809+ |
 | JSON | `System.Text.Json` | No reflection; direct element access |
 | Registry / shell | `Microsoft.Win32.Registry`, P/Invoke | Legacy zip file assoc, `SHChangeNotify`, COM `WScript.Shell` |
-| Tests | xUnit (`Microsoft.NET.Test.Sdk` 17.x) | Pure-function tests, 53 cases |
+| Tests | xUnit (`Microsoft.NET.Test.Sdk` 17.x) | Pure-function tests, 56 cases |
 | Build script | PowerShell 5.1+ (`build.ps1`) | |
 | CI/CD | GitHub Actions (`windows-latest`) | Tag-triggered releases |
-| Distribution | GitHub Releases (signed MSIX + cert, zip fallback) + `install.ps1` (`irm \| iex`) | |
+| Distribution | GitHub Releases (self-contained zip + `install.ps1` via `irm \| iex`) | MSIX artifacts hidden for now |
 
 **No other NuGet packages.** Do not add CommunityToolkit or third-party UI libs.
 
@@ -166,7 +166,7 @@ gdriveHandler/
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
     <UseWinUI>true</UseWinUI>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-    <Version>1.1.0</Version>
+    <Version>1.1.5</Version>
     <Company>devSpaceOB</Company>
     <Product>gdriveHandler</Product>
     <AssemblyTitle>gdriveHandler</AssemblyTitle>
@@ -182,7 +182,7 @@ gdriveHandler/
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.8249" />
   </ItemGroup>
 </Project>
 ```
@@ -371,7 +371,13 @@ Token note: the gh CLI token needs `repo` + `workflow` scopes to push `.github/w
 ```powershell
 irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install.ps1 | iex
 ```
-`install.ps1` fetches the latest release zip, extracts it, and runs `gdriveHandler.exe --install`.
+`install.ps1` fetches the latest self-contained release zip, extracts it, and runs `gdriveHandler.exe --install`.
+
+### Current 1.1.5 release shape
+Public releases expose only `gdriveHandler-<ver>-x64-selfcontained.zip`, `gdriveHandler-<ver>-x64-fd.exe`, and `install.ps1`. MSIX build support remains in the repo but is hidden from public release assets.
+
+### First-launch self install
+When the unpackaged GUI starts from a portable folder, it checks whether the per-user installed exe exists and all supported extensions are registered to `devSpaceOB.gdriveHandler` under HKCU. If not, it shows an Install / Cancel prompt. Install runs the same `--install` path, launches the installed exe, then exits the portable copy.
 
 ---
 
@@ -389,6 +395,18 @@ See [ROADMAP.md](ROADMAP.md) for the full feature list, v2.0 ideas, and known li
 ## 15. Changelog
 
 > Format: [Keep a Changelog](https://keepachangelog.com/) style. Newest first. Update on every release.
+
+### [1.1.5] — 2026-05-30
+**Zip-only self-install release.**
+
+**Changed**
+- Public releases now expose only the self-contained zip, framework-dependent exe, and `install.ps1`; MSIX artifacts are hidden while MSIX support remains in the repo.
+- `install.ps1` always uses the zip self-install path and no longer imports self-signed certificates.
+- First GUI launch from an uninstalled portable folder offers to install for the current user, then relaunches from `%LOCALAPPDATA%\Programs\gdriveHandler\`.
+
+**Added**
+- Install-health check requires the installed exe plus all supported HKCU extension associations.
+- Tests: **56** (added install-health coverage).
 
 ### [1.1.0] — 2026-05-29
 **GUI overhaul + Türkçe localization (Phase 1).**
@@ -472,7 +490,7 @@ Under MSIX, associations are declarative and install/uninstall are Windows-manag
 - Trade-off: self-signed still shows "unknown publisher"; importing the cert removes the *install* block. A paid OV/EV cert would remove SmartScreen entirely (deferred by choice).
 
 ### 17.6 CI/CD & release assets (`.github/workflows/build.yml`, `build.ps1`, `install.ps1`)
-Produce: `gdriveHandler-<ver>-x64.msix` (primary, signed), `…-x64.cer` (public cert), `…-x64-selfcontained.zip` (portable fallback), `…-x64-fd.exe` (framework-dependent, tiny), `install.ps1`.
+Current public releases hide MSIX and produce: `…-x64-selfcontained.zip`, `…-x64-fd.exe`, and `install.ps1`. Internal MSIX builds remain available with `build.ps1 -IncludeMsix`.
 
 ### 17.7 Clean install-folder layout (root = 2 files, rest in `\files\`) — user request, best-effort
 Target on-disk layout for the **unpackaged folder / zip / `--install`** channel:
@@ -489,13 +507,13 @@ A literal 2-files-only root is hard: the apphost normally needs `gdriveHandler.d
 
 ### 17.8 Phase 2 verification
 - Portable clean-layout work in §17.7 is still deferred; current zip fallback keeps the normal WinUI folder layout, while config/logs live under `%LOCALAPPDATA%\gdriveHandler\`.
-- Build + sign MSIX locally; install the signed `.msix` after trusting the `.cer`; opening a `.gdoc` launches the correct profile (headless path); uninstall via Windows Settings is clean and `%LOCALAPPDATA%\gdriveHandler\` aliases survive; `install.ps1` works end-to-end on a clean VM.
+- Internal MSIX builds can still be produced with `build.ps1 -IncludeMsix`; public 1.1.5 releases hide MSIX while the zip/IRM install path is validated.
 
 ### 17.9 Implementation notes
 - `Package.appxmanifest` defines the MSIX identity (`devSpaceOB.gdriveHandler`, `CN=devSpaceOB`), full-trust desktop entry point, visual assets, and all 11 Google Workspace file associations.
 - Packaged file activation is handled in `Program.cs` through `Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs()` and routes directly to the existing headless `HandleFile(...)` path.
 - `config.ini` and logs now live under `%LOCALAPPDATA%\gdriveHandler\` for both MSIX and legacy zip installs.
 - Packaged builds show Windows-managed setup/uninstall UI; legacy zip builds keep the HKCU/HKLM registry installer path.
-- `build.ps1` produces `gdriveHandler-<ver>-x64.msix`, `gdriveHandler-<ver>-x64.cer` when signing with a PFX, `gdriveHandler-<ver>-x64-selfcontained.zip`, and `gdriveHandler-<ver>-x64-fd.exe`.
+- `build.ps1` produces `gdriveHandler-<ver>-x64-selfcontained.zip` and `gdriveHandler-<ver>-x64-fd.exe` by default; `-IncludeMsix` also produces MSIX/CER for internal testing.
 - The .NET 10 SDK plus current `Microsoft.Windows.SDK.BuildTools.MSIX` task requires `System.Security.Permissions.dll` beside the MSIX task assembly. `gdriveHandler.csproj` restores and copies that dependency before manifest generation so local and CI MSIX builds are reproducible.
 - §17.7 clean install-folder layout has not been implemented yet; it remains a separate risky change because WinUI/native runtime probing can break both GUI and headless launch.
