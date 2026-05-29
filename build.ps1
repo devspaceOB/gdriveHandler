@@ -31,7 +31,7 @@ $root = if ($PSScriptRoot) { $PSScriptRoot }
 $proj        = Join-Path $root "src\gdriveHandler\gdriveHandler.csproj"
 $testsCsproj = Join-Path $root "tests\gdriveHandler.Tests\gdriveHandler.Tests.csproj"
 $dist        = Join-Path $root "dist"
-$tfm         = "net10.0-windows10.0.19041.0"
+$tfm         = "net10.0-windows10.0.26100.0"
 
 # Validate dotnet
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
