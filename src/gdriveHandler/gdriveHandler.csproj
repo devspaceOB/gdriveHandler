@@ -17,13 +17,13 @@
     <!-- Disable auto-generated Main so Program.cs keeps the entry point -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <!-- Version / identity -->
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Company>devSpaceOB</Company>
     <Product>gdriveHandler</Product>
     <AssemblyTitle>gdriveHandler</AssemblyTitle>
-    <!-- Publish settings (PublishSingleFile must not be set at project level with WinAppSDK;
-         pass -p:PublishSingleFile=true only at dotnet publish time via build.ps1) -->
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <!-- Folder deployment (NOT single-file): WinUI 3 + PublishSingleFile self-extracts
+         the native runtime DLLs to %TEMP%, which fail-fasts on load. Shipping the exe
+         and DLLs together in one install folder is the supported, stable layout. -->
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <DebugType>embedded</DebugType>

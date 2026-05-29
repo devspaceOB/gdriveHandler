@@ -16,21 +16,45 @@
             Loaded="NavView_Loaded">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Tag="home" Icon="Home" Content="Home"
-                    AutomationProperties.AutomationId="NavHome"/>
-                <NavigationViewItem Tag="guide" Icon="Help" Content="Guide"
-                    AutomationProperties.AutomationId="NavGuide"/>
-                <NavigationViewItem Tag="aliases" Icon="ContactInfo" Content="Aliases"
-                    AutomationProperties.AutomationId="NavAliases"/>
-                <NavigationViewItem Tag="settings" Icon="Setting" Content="Settings"
-                    AutomationProperties.AutomationId="NavSettings"/>
-                <NavigationViewItem Tag="logs" Icon="Document" Content="Logs"
-                    AutomationProperties.AutomationId="NavLogs"/>
+                <NavigationViewItem Tag="home" Content="Home"
+                    AutomationProperties.AutomationId="NavHome">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Tag="guide" Content="Guide"
+                    AutomationProperties.AutomationId="NavGuide">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE897;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Tag="aliases" Content="Aliases"
+                    AutomationProperties.AutomationId="NavAliases">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE716;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Tag="settings" Content="Settings"
+                    AutomationProperties.AutomationId="NavSettings">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Tag="logs" Content="Logs"
+                    AutomationProperties.AutomationId="NavLogs">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7C3;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Tag="about" Icon="Info" Content="About"
-                    AutomationProperties.AutomationId="NavAbout"/>
+                <NavigationViewItem Tag="about" Content="About"
+                    AutomationProperties.AutomationId="NavAbout">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" Margin="0"/>

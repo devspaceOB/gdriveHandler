@@ -54,16 +54,17 @@ Downloads the latest self-contained release and installs it for your user accoun
 
 ### Option B — Manual
 
-1. Download **`gdriveHandler-x64.exe`** from the [latest release](https://github.com/devspaceOB/gdriveHandler/releases/latest)
-2. Run it with `--install`:
+1. Download **`gdriveHandler-x64.zip`** from the [latest release](https://github.com/devspaceOB/gdriveHandler/releases/latest)
+2. Extract it anywhere, then run:
    ```
-   gdriveHandler-x64.exe --install
+   gdriveHandler.exe --install
    ```
+   This copies the app into `%LocalAppData%\Programs\gdriveHandler\` and registers the file associations. (Or just run `gdriveHandler.exe` and click **Install for me** on the Home page.)
 3. If Windows asks you to choose a default app for `.gdoc`, select **gdriveHandler**
 
 > **System-wide install** (all users, requires admin):
 > ```
-> gdriveHandler-x64.exe --install --system
+> gdriveHandler.exe --install --system
 > ```
 
 ### After Installing
@@ -141,12 +142,11 @@ gdriveHandler --help               Show usage
 
 ## Builds
 
-| File | Size | Requirements |
-|------|------|--------------|
-| `gdriveHandler-x64.exe` | ~85 MB | Windows 10 1809+ / Windows 11 x64 — **nothing else needed** |
-| `gdriveHandler-x64-fd.exe` | ~79 MB | [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) + [Windows App SDK 2.0](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads) |
+| File | Download | Installed | Requirements |
+|------|----------|-----------|--------------|
+| `gdriveHandler-x64.zip` | ~84 MB | ~215 MB | Windows 10 1809+ / Windows 11 x64 — **nothing else needed** |
 
-The self-contained build is recommended for most users. The framework-dependent build is useful in managed environments where the runtimes are already deployed.
+The app is **self-contained**: it bundles the .NET 10 runtime and the Windows App SDK, so there are no prerequisites to install. It ships as a folder (exe + runtime DLLs) rather than a single `.exe`, because WinUI 3 single-file packaging extracts native DLLs to `%TEMP%` and crashes on launch — a folder is the supported, stable layout. Everything installs into one directory.
 
 ---
 

@@ -18,6 +18,7 @@ This file tracks planned features, improvements, and known issues. Items are rou
 - [ ] Auto-update check via GitHub Releases API (opt-in, settings toggle)
 - [ ] Windows Store / MSIX packaging option for enterprise distribution
 - [ ] ARM64 build (`win-arm64` publish target)
+- [ ] Framework-dependent build option for managed environments (smaller download, requires .NET 10 + WinAppSDK runtime)
 
 ### Settings UI
 - [ ] In-app notification when a new release is available
@@ -68,6 +69,6 @@ This file tracks planned features, improvements, and known issues. Items are rou
 - [x] All Google Workspace shortcut types: .gdoc, .gsheet, .gslides, .gdraw, .gform, .gscript, .gmap, .glink, .gsite, .gtable, .gjam
 - [x] Headless file-handler path (zero GUI overhead for normal use)
 - [x] Diagnostic mode (`--diagnose`)
-- [x] Self-contained + framework-dependent release builds
+- [x] Self-contained folder deployment (bundles .NET 10 + WinAppSDK, zero prerequisites)
 - [x] GitHub Actions CI with automated releases
 - [x] PowerShell one-liner silent install

@@ -64,16 +64,8 @@ internal static class Installer
     {
         try
         {
-            var src = Environment.ProcessPath
-                ?? throw new InvalidOperationException("Cannot determine the current executable path.");
-
-            Directory.CreateDirectory(AppConstants.InstallDir);
             var dest = AppConstants.InstalledExePath;
-            if (!string.Equals(Path.GetFullPath(src), Path.GetFullPath(dest), StringComparison.OrdinalIgnoreCase))
-            {
-                File.Copy(src, dest, overwrite: true);
-                log.Info($"Copied executable to {dest}");
-            }
+            CopyAppFolder(AppConstants.InstallDir, log);
 
             RegisterProgId(Registry.CurrentUser, ClassesRoot, dest, log);
             RegisterExtensions(Registry.CurrentUser, ClassesRoot, log);
@@ -103,16 +95,8 @@ internal static class Installer
 
         try
         {
-            var src = Environment.ProcessPath
-                ?? throw new InvalidOperationException("Cannot determine the current executable path.");
-
-            Directory.CreateDirectory(AppConstants.SystemInstallDir);
             var dest = AppConstants.SystemExePath;
-            if (!string.Equals(Path.GetFullPath(src), Path.GetFullPath(dest), StringComparison.OrdinalIgnoreCase))
-            {
-                File.Copy(src, dest, overwrite: true);
-                log.Info($"Copied executable to {dest}");
-            }
+            CopyAppFolder(AppConstants.SystemInstallDir, log);
 
             RegisterProgId(Registry.LocalMachine, HklmClassesRoot, dest, log);
             RegisterExtensions(Registry.LocalMachine, HklmClassesRoot, log);
@@ -198,6 +182,64 @@ internal static class Installer
             log.Error($"System uninstall failed: {ex}");
             Ui.ShowError("System uninstall failed." + Environment.NewLine + Environment.NewLine + ex.Message);
             return ExitCode.UninstallFailed;
+        }
+    }
+
+    // ----- folder deployment -----
+
+    /// <summary>
+    /// Copy the running app folder (exe + Windows App SDK runtime DLLs + Assets +
+    /// resources.pri) into <paramref name="installDir"/>. The app ships as a folder
+    /// (not single-file) because WinUI 3 + PublishSingleFile self-extracts native
+    /// DLLs to %TEMP% and fail-fasts. No-op when already running from the target.
+    /// </summary>
+    private static void CopyAppFolder(string installDir, Logger log)
+    {
+        var srcExe = Environment.ProcessPath
+            ?? throw new InvalidOperationException("Cannot determine the current executable path.");
+        var srcDir = Path.GetDirectoryName(srcExe)
+            ?? throw new InvalidOperationException("Cannot determine the source directory.");
+
+        Directory.CreateDirectory(installDir);
+
+        if (string.Equals(Path.GetFullPath(srcDir).TrimEnd('\\'),
+                Path.GetFullPath(installDir).TrimEnd('\\'),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            log.Info("Already running from the install directory; skipping file copy.");
+            return;
+        }
+
+        CopyDirectory(srcDir, installDir, log);
+        log.Info($"Copied app folder to {installDir}");
+    }
+
+    private static void CopyDirectory(string sourceDir, string destDir, Logger log)
+    {
+        Directory.CreateDirectory(destDir);
+
+        foreach (var file in Directory.EnumerateFiles(sourceDir))
+        {
+            var name = Path.GetFileName(file);
+            // Never overwrite user data that lives alongside the exe.
+            if (name.Equals("config.ini", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            File.Copy(file, Path.Combine(destDir, name), overwrite: true);
+        }
+
+        foreach (var dir in Directory.EnumerateDirectories(sourceDir))
+        {
+            var name = Path.GetFileName(dir);
+            // Skip the logs subfolder if the source happens to contain one.
+            if (name.Equals("logs", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            CopyDirectory(dir, Path.Combine(destDir, name), log);
         }
     }
 

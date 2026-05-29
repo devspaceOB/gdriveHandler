@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.Windows.ApplicationModel.DynamicDependency;
 using Microsoft.UI.Dispatching;
 using WinRT;
 
@@ -71,10 +70,11 @@ internal static class Program
 
     private static ExitCode LaunchGui(string initialPage)
     {
-        // Initialize WinAppSDK bootstrap for unpackaged apps.
+        // Self-contained Windows App SDK deployment: the runtime DLLs ship next to
+        // the exe in the install folder and are loaded directly — no bootstrapper /
+        // framework-package lookup needed (calling Bootstrap.Initialize here would
+        // fail because self-contained apps register no framework package).
         // Only reached on the GUI path — the file-handling hot path never gets here.
-        Bootstrap.Initialize(0x00020000); // WinAppSDK 2.0
-
         ComWrappersSupport.InitializeComWrappers();
         Application.Start(p =>
         {

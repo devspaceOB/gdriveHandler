@@ -1,26 +1,25 @@
 #requires -Version 5.1
 <#
 .SYNOPSIS
-    Builds and publishes gdriveHandler as a WinUI 3 unpackaged EXE.
+    Builds and publishes gdriveHandler as a self-contained WinUI 3 app folder + zip.
 
 .DESCRIPTION
+    WinUI 3 ships as a FOLDER (exe + Windows App SDK runtime DLLs), not a single
+    file: PublishSingleFile self-extracts native DLLs to %TEMP% and fail-fasts on
+    launch. The whole folder installs into one directory on the target machine.
+
     Produces:
-        dist\gdriveHandler-x64.exe        - self-contained single-file (primary)
-        dist\gdriveHandler-x64-Setup.exe  - identical self-installing copy
-        dist\gdriveHandler-x64-fd.exe     - framework-dependent (requires .NET 10 + WinAppSDK 2.0)
+        dist\gdriveHandler-x64\        - the published app folder
+        dist\gdriveHandler-x64.zip     - zipped folder (release asset)
 
 .EXAMPLE
     pwsh build.ps1
     pwsh build.ps1 -SkipTests
-    pwsh build.ps1 -SelfContainedOnly
-    pwsh build.ps1 -FrameworkDependentOnly
 #>
 [CmdletBinding()]
 param(
     [string]$Configuration = "Release",
-    [switch]$SkipTests,
-    [switch]$SelfContainedOnly,
-    [switch]$FrameworkDependentOnly
+    [switch]$SkipTests
 )
 
 $ErrorActionPreference = "Stop"
@@ -31,7 +30,8 @@ $root = if ($PSScriptRoot) { $PSScriptRoot }
 $proj        = Join-Path $root "src\gdriveHandler\gdriveHandler.csproj"
 $testsCsproj = Join-Path $root "tests\gdriveHandler.Tests\gdriveHandler.Tests.csproj"
 $dist        = Join-Path $root "dist"
-$tfm         = "net10.0-windows10.0.26100.0"
+$appDir      = Join-Path $dist "gdriveHandler-x64"
+$zipPath     = Join-Path $dist "gdriveHandler-x64.zip"
 
 # Validate dotnet
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
@@ -47,48 +47,31 @@ if (-not $SkipTests -and (Test-Path $testsCsproj)) {
 }
 
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
+if (Test-Path $appDir) { Remove-Item -Recurse -Force $appDir }
+if (Test-Path $zipPath) { Remove-Item -Force $zipPath }
 
-# --- Self-contained build (primary) ---
-if (-not $FrameworkDependentOnly) {
-    Write-Host "`nPublishing self-contained (win-x64)..." -ForegroundColor Cyan
-    $scPublish = Join-Path $root "src\gdriveHandler\bin\$Configuration\$tfm\win-x64\publish"
-    & dotnet publish $proj -c $Configuration -r win-x64 --self-contained true `
-        -p:PublishSingleFile=true `
-        -p:EnableCompressionInSingleFile=true `
-        -p:IncludeNativeLibrariesForSelfExtract=true `
-        --nologo
-    if ($LASTEXITCODE -ne 0) { throw "self-contained publish failed" }
+# --- Self-contained folder publish (NOT single-file) ---
+Write-Host "`nPublishing self-contained folder (win-x64)..." -ForegroundColor Cyan
+& dotnet publish $proj -c $Configuration -r win-x64 --self-contained true `
+    -o $appDir --nologo
+if ($LASTEXITCODE -ne 0) { throw "publish failed" }
 
-    $scExe = Join-Path $scPublish "gdriveHandler.exe"
-    if (-not (Test-Path $scExe)) { throw "Expected output not found: $scExe" }
-    Copy-Item $scExe (Join-Path $dist "gdriveHandler-x64.exe") -Force
-    Copy-Item $scExe (Join-Path $dist "gdriveHandler-x64-Setup.exe") -Force
-    $size = [math]::Round((Get-Item $scExe).Length / 1MB, 1)
-    Write-Host "Self-contained: $size MB" -ForegroundColor Green
-}
+$exe = Join-Path $appDir "gdriveHandler.exe"
+if (-not (Test-Path $exe)) { throw "Expected output not found: $exe" }
 
-# --- Framework-dependent build (secondary) ---
-if (-not $SelfContainedOnly) {
-    Write-Host "`nPublishing framework-dependent (win-x64)..." -ForegroundColor Cyan
-    $fdPublish = Join-Path $root "src\gdriveHandler\bin\$Configuration\$tfm\win-x64-fd\publish"
-    & dotnet publish $proj -c $Configuration -r win-x64 --self-contained false `
-        -p:WindowsAppSDKSelfContained=false `
-        -p:PublishSingleFile=true `
-        -o $fdPublish `
-        --nologo
-    if ($LASTEXITCODE -ne 0) { throw "framework-dependent publish failed" }
+# --- Zip the folder for release ---
+Write-Host "Zipping..." -ForegroundColor Cyan
+Compress-Archive -Path "$appDir\*" -DestinationPath $zipPath -Force
 
-    $fdExe = Join-Path $fdPublish "gdriveHandler.exe"
-    if (-not (Test-Path $fdExe)) { throw "Expected output not found: $fdExe" }
-    Copy-Item $fdExe (Join-Path $dist "gdriveHandler-x64-fd.exe") -Force
-    $fdSize = [math]::Round((Get-Item $fdExe).Length / 1MB, 1)
-    Write-Host "Framework-dependent: $fdSize MB  (requires .NET 10 + WinAppSDK 2.0 runtime)" -ForegroundColor Green
-}
+$folderSize = [math]::Round((Get-ChildItem $appDir -Recurse | Measure-Object Length -Sum).Sum / 1MB, 1)
+$zipSize    = [math]::Round((Get-Item $zipPath).Length / 1MB, 1)
 
-Write-Host "`nDone. Outputs in $dist" -ForegroundColor Green
+Write-Host "`nDone." -ForegroundColor Green
+Write-Host "  App folder : $appDir  ($folderSize MB)"
+Write-Host "  Release zip: $zipPath  ($zipSize MB)"
 Write-Host "`nInstall (current user):" -ForegroundColor Yellow
-Write-Host "  `"$(Join-Path $dist 'gdriveHandler-x64-Setup.exe')`" --install"
+Write-Host "  & `"$exe`" --install"
 Write-Host "Install (all users, UAC):" -ForegroundColor Yellow
-Write-Host "  `"$(Join-Path $dist 'gdriveHandler-x64-Setup.exe')`" --install --system"
+Write-Host "  & `"$exe`" --install --system"
 Write-Host "Uninstall:" -ForegroundColor Yellow
-Write-Host "  `"$($env:LOCALAPPDATA)\Programs\gdriveHandler\gdriveHandler.exe`" --uninstall"
+Write-Host "  & `"$($env:LOCALAPPDATA)\Programs\gdriveHandler\gdriveHandler.exe`" --uninstall"

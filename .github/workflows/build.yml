@@ -29,41 +29,20 @@ jobs:
       - name: Run tests
         run: dotnet test tests/gdriveHandler.Tests/gdriveHandler.Tests.csproj -c Release --nologo --no-restore
 
-      - name: Publish — self-contained (primary)
+      - name: Publish — self-contained folder
+        shell: pwsh
         run: |
           dotnet publish src/gdriveHandler/gdriveHandler.csproj `
             -c Release -r win-x64 --self-contained true `
-            -p:PublishSingleFile=true `
-            -p:EnableCompressionInSingleFile=true `
-            -p:IncludeNativeLibrariesForSelfExtract=true `
-            --nologo
-        shell: pwsh
+            -o dist/gdriveHandler-x64 --nologo
+          if ($LASTEXITCODE -ne 0) { throw "publish failed" }
 
-      - name: Publish — framework-dependent (secondary)
-        run: |
-          $tfm = "net10.0-windows10.0.26100.0"
-          dotnet publish src/gdriveHandler/gdriveHandler.csproj `
-            -c Release -r win-x64 --self-contained false `
-            -p:WindowsAppSDKSelfContained=false `
-            -o "src/gdriveHandler/bin/Release/$tfm/win-x64-fd/publish" `
-            --nologo
-        shell: pwsh
-
-      - name: Collect artifacts
+      - name: Zip release asset
         shell: pwsh
         run: |
-          $tfm = "net10.0-windows10.0.26100.0"
-          $scExe = "src/gdriveHandler/bin/Release/$tfm/win-x64/publish/gdriveHandler.exe"
-          $fdExe = "src/gdriveHandler/bin/Release/$tfm/win-x64-fd/publish/gdriveHandler.exe"
-
-          New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item $scExe "dist/gdriveHandler-x64.exe"
-          Copy-Item $fdExe "dist/gdriveHandler-x64-fd.exe"
-
-          $scSize = [math]::Round((Get-Item "dist/gdriveHandler-x64.exe").Length / 1MB, 1)
-          $fdSize = [math]::Round((Get-Item "dist/gdriveHandler-x64-fd.exe").Length / 1MB, 1)
-          Write-Host "Self-contained: $scSize MB"
-          Write-Host "Framework-dependent: $fdSize MB"
+          Compress-Archive -Path "dist/gdriveHandler-x64/*" -DestinationPath "dist/gdriveHandler-x64.zip" -Force
+          $zipSize = [math]::Round((Get-Item "dist/gdriveHandler-x64.zip").Length / 1MB, 1)
+          Write-Host "Release zip: $zipSize MB"
 
       - name: Create release
         if: startsWith(github.ref, 'refs/tags/')
@@ -74,6 +53,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/gdriveHandler-x64.exe
-            dist/gdriveHandler-x64-fd.exe
+            dist/gdriveHandler-x64.zip
             install.ps1

@@ -1,5 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Application
     x:Class="GdriveHandler.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <!-- Merges the Fluent/WinUI control styles (NavigationView, etc.).
+             Without this, controls fail with "Cannot find a Resource with
+             the Name/Key ..." at InitializeComponent and the window crashes. -->
+        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+    </Application.Resources>
 </Application>

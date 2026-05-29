@@ -12,12 +12,22 @@ public sealed partial class MainWindow : Window
     private MicaController? _micaController;
     private SystemBackdropConfiguration? _backdropConfig;
 
+    private readonly Logger _log = new();
+
     public MainWindow(string initialPage = "home")
     {
         _initialPage = initialPage;
-        InitializeComponent();
-        SetupWindow();
-        SetupMica();
+        try
+        {
+            InitializeComponent();
+            SetupWindow();
+            SetupMica();
+        }
+        catch (Exception ex)
+        {
+            _log.Error("MainWindow ctor failed: " + ex);
+            throw;
+        }
     }
 
     private void SetupWindow()
