@@ -24,7 +24,6 @@
     <!-- Publish settings (PublishSingleFile must not be set at project level with WinAppSDK;
          pass -p:PublishSingleFile=true only at dotnet publish time via build.ps1) -->
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <DebugType>embedded</DebugType>
