@@ -8,6 +8,11 @@ namespace GdriveHandler;
 /// </summary>
 internal static class NativeMethods
 {
+    // ----- DPI -----
+
+    [DllImport("user32.dll")]
+    public static extern uint GetDpiForWindow(IntPtr hwnd);
+
     // ----- MessageBox -----
     public const uint MB_OK = 0x0;
     public const uint MB_YESNO = 0x4;

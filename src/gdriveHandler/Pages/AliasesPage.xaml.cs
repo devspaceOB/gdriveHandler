@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace GdriveHandler.Pages;
 
@@ -77,9 +79,9 @@ public sealed partial class AliasesPage : Page
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot,
-            Title = "Success",
-            Content = "Aliases saved.",
-            CloseButtonText = "OK",
+            Title = Loc.Get("AliasesSaveSuccessTitle"),
+            Content = Loc.Get("AliasesSaveSuccess"),
+            CloseButtonText = Loc.Get("DialogOK"),
         };
         await dialog.ShowAsync();
     }
@@ -90,48 +92,131 @@ public sealed partial class AliasesPage : Page
         var candidates = BrowserDiscovery.Discover(log);
         var ids = ProfileMatcher.EnumerateProfiles(candidates, log);
 
-        string text;
+        Microsoft.UI.Xaml.UIElement content;
+
         if (ids.Count == 0)
         {
-            text = "No signed-in profiles found.";
+            content = new TextBlock
+            {
+                Text = Loc.Get("AliasesDetectNone"),
+                TextWrapping = Microsoft.UI.Xaml.TextWrapping.Wrap,
+            };
         }
         else
         {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"{"Channel",-20} {"Profile",-12} {"Email",-35} GaiaId");
-            sb.AppendLine(new string('-', 90));
-            foreach (var id in ids)
+            var profileList = BuildProfileList(ids);
+            content = new ScrollViewer
             {
-                sb.AppendLine(
-                    $"{id.Browser.Channel,-20} {id.ProfileDir,-12} " +
-                    $"{id.UserName ?? "(not signed in)",-35} {id.GaiaId ?? ""}");
-            }
-            text = sb.ToString();
+                Content = profileList,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                MinHeight = 200,
+            };
         }
 
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot,
-            Title = "Detected profiles",
-            Content = new ScrollViewer
-            {
-                MaxHeight = 360,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = new TextBox
-                {
-                    Text = text,
-                    IsReadOnly = true,
-                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas"),
-                    FontSize = 12,
-                    AcceptsReturn = true,
-                    TextWrapping = Microsoft.UI.Xaml.TextWrapping.NoWrap,
-                    BorderThickness = new Microsoft.UI.Xaml.Thickness(0),
-                    Background = null,
-                    MinWidth = 620,
-                },
-            },
-            CloseButtonText = "Close",
+            Title = Loc.Get("AliasesDetectDialogTitle"),
+            Content = content,
+            CloseButtonText = Loc.Get("DialogClose"),
+            MinWidth = 720,
+            MinHeight = 480,
         };
+
         await dialog.ShowAsync();
+    }
+
+    private static StackPanel BuildProfileList(IReadOnlyList<ProfileIdentity> ids)
+    {
+        var list = new StackPanel { Spacing = 4 };
+
+        foreach (var id in ids.OrderBy(i => i.Browser.Channel).ThenBy(i => i.ProfileDir))
+        {
+            var card = BuildProfileCard(id);
+            list.Children.Add(card);
+        }
+
+        return list;
+    }
+
+    private static Border BuildProfileCard(ProfileIdentity id)
+    {
+        var card = new Border
+        {
+            CornerRadius = new Microsoft.UI.Xaml.CornerRadius(6),
+            Padding = new Microsoft.UI.Xaml.Thickness(12, 8, 12, 8),
+            Margin = new Microsoft.UI.Xaml.Thickness(0, 2, 0, 2),
+        };
+
+        var grid = new Grid { ColumnSpacing = 16 };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new Microsoft.UI.Xaml.GridLength(1, Microsoft.UI.Xaml.GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = Microsoft.UI.Xaml.GridLength.Auto });
+
+        // Left: browser + profile dir
+        var infoStack = new StackPanel
+        {
+            Spacing = 2,
+            VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+        };
+        Microsoft.UI.Xaml.Controls.Grid.SetColumn(infoStack, 0);
+
+        var browserLabel = new TextBlock
+        {
+            Text = id.Browser.Channel,
+            FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+        };
+
+        var dirLabel = new TextBlock
+        {
+            Text = id.ProfileDir,
+            Foreground = (Brush)Microsoft.UI.Xaml.Application.Current.Resources["TextFillColorSecondaryBrush"],
+        };
+
+        infoStack.Children.Add(browserLabel);
+        infoStack.Children.Add(dirLabel);
+
+        // Right: email + copy button
+        var emailStack = new StackPanel
+        {
+            Orientation = Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
+            Spacing = 8,
+            VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+        };
+        Microsoft.UI.Xaml.Controls.Grid.SetColumn(emailStack, 1);
+
+        var email = id.UserName ?? "(not signed in)";
+        var emailBlock = new TextBlock
+        {
+            Text = email,
+            IsTextSelectionEnabled = true,
+            VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+        };
+
+        emailStack.Children.Add(emailBlock);
+
+        if (!string.IsNullOrEmpty(id.UserName))
+        {
+            var copyBtn = new Button
+            {
+                Content = Loc.Get("AliasesCopyEmail"),
+                Padding = new Microsoft.UI.Xaml.Thickness(8, 4, 8, 4),
+            };
+            var emailCopy = id.UserName; // capture for closure
+            copyBtn.Click += (_, _) =>
+            {
+                var pkg = new DataPackage();
+                pkg.SetText(emailCopy);
+                Clipboard.SetContent(pkg);
+            };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(copyBtn, "BtnCopyEmail");
+            emailStack.Children.Add(copyBtn);
+        }
+
+        grid.Children.Add(infoStack);
+        grid.Children.Add(emailStack);
+        card.Child = grid;
+
+        return card;
     }
 }

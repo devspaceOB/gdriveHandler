@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema Version 2.0
+    See https://docs.microsoft.com/dotnet/api/system.resources.resxresourcewriter
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Navigation items (x:Uid on NavigationViewItem sets .Content) -->
+  <data name="NavHome.Content" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="NavGuide.Content" xml:space="preserve">
+    <value>Rehber</value>
+  </data>
+  <data name="NavAliases.Content" xml:space="preserve">
+    <value>Takma Adlar</value>
+  </data>
+  <data name="NavSettings.Content" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="NavAbout.Content" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+
+  <!-- App shell -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>gdriveHandler</value>
+  </data>
+
+  <!-- Home page -->
+  <data name="HomeTagline.Text" xml:space="preserve">
+    <value>Google Workspace dosyalarını her seferinde doğru tarayıcı profilinde açar.</value>
+  </data>
+  <data name="HomeStatusInstalledUser" xml:space="preserve">
+    <value>Yüklü (bu kullanıcı için)</value>
+  </data>
+  <data name="HomeStatusInstalledSystem" xml:space="preserve">
+    <value>Yüklü (tüm kullanıcılar için)</value>
+  </data>
+  <data name="HomeStatusNotInstalled" xml:space="preserve">
+    <value>Yüklü değil</value>
+  </data>
+  <data name="HomeStatusAllSet" xml:space="preserve">
+    <value>Her şey hazır. gdriveHandler etkin ve çalışıyor.</value>
+  </data>
+  <data name="HomeStatusNotInstalledDetail" xml:space="preserve">
+    <value>Google Workspace dosyalarını doğru profilde otomatik açmak için gdriveHandler'ı kur.</value>
+  </data>
+  <data name="HomeBtnSetup.Content" xml:space="preserve">
+    <value>gdriveHandler'ı Kur</value>
+  </data>
+  <data name="HomeHowItWorksTitle.Text" xml:space="preserve">
+    <value>Nasıl çalışır</value>
+  </data>
+  <data name="HomeStep1.Text" xml:space="preserve">
+    <value>1. Bir .gdoc, .gsheet veya başka bir Google Workspace dosyasına çift tıklarsın.</value>
+  </data>
+  <data name="HomeStep2.Text" xml:space="preserve">
+    <value>2. gdriveHandler dosyanın içindeki e-posta adresini okuyarak eşleşen Chrome veya Edge profilini bulur.</value>
+  </data>
+  <data name="HomeStep3.Text" xml:space="preserve">
+    <value>3. Dosya o profilde açılır — artık "Erişim gerekiyor" hatası yok.</value>
+  </data>
+  <data name="HomeLinkGuide.Content" xml:space="preserve">
+    <value>Tam rehberi oku</value>
+  </data>
+  <data name="HomeLinkAliases.Content" xml:space="preserve">
+    <value>Takma adları yönet</value>
+  </data>
+  <data name="HomeInstallSuccessTitle" xml:space="preserve">
+    <value>Yüklendi</value>
+  </data>
+  <data name="HomeInstallSuccess" xml:space="preserve">
+    <value>Başarıyla yüklendi. Windows bu dosyalar için başka bir uygulamayı varsayılan tutuyorsa Ayarlar → Uygulamalar → Varsayılan uygulamalar üzerinden gdriveHandler'ı bir kez seç.</value>
+  </data>
+  <data name="HomeInstallFailed" xml:space="preserve">
+    <value>Yükleme başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+
+  <!-- Settings page — General subtab -->
+  <data name="SettingsTitle.Text" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="SettingsTabGeneral.Content" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="SettingsTabAdvanced.Content" xml:space="preserve">
+    <value>Gelişmiş</value>
+  </data>
+  <data name="SettingsTabLogs.Content" xml:space="preserve">
+    <value>Günlükler</value>
+  </data>
+  <data name="SettingsNewWindowLabel.Text" xml:space="preserve">
+    <value>Yeni pencerede aç</value>
+  </data>
+  <data name="SettingsNewWindowDesc.Text" xml:space="preserve">
+    <value>Tarayıcı profili açılırken --new-window bayrağı ekler</value>
+  </data>
+  <data name="SettingsEdgeLabel.Text" xml:space="preserve">
+    <value>Edge profillerini dahil et</value>
+  </data>
+  <data name="SettingsEdgeDesc.Text" xml:space="preserve">
+    <value>Edge yanlış eşleşmelere yol açıyorsa devre dışı bırak</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="SettingsLanguageDesc.Text" xml:space="preserve">
+    <value>Arayüz dili</value>
+  </data>
+  <data name="SettingsAdvancedModeLabel.Text" xml:space="preserve">
+    <value>Gelişmiş ayarlar</value>
+  </data>
+  <data name="SettingsAdvancedModeDesc.Text" xml:space="preserve">
+    <value>Kurulum yönetimi, tanılama ve günlük görüntüleyiciyi göster</value>
+  </data>
+  <data name="SettingsSavedConfirm.Text" xml:space="preserve">
+    <value>Kaydedildi</value>
+  </data>
+
+  <!-- Settings page — Advanced subtab -->
+  <data name="AdvSetupTitle.Text" xml:space="preserve">
+    <value>Kurulum ve Yönetim</value>
+  </data>
+  <data name="AdvBtnInstallUser.Content" xml:space="preserve">
+    <value>Benim için kur</value>
+  </data>
+  <data name="AdvBtnInstallSystem.Content" xml:space="preserve">
+    <value>Tüm kullanıcılar için kur (yönetici)</value>
+  </data>
+  <data name="AdvBtnRepair.Content" xml:space="preserve">
+    <value>Onar</value>
+  </data>
+  <data name="AdvBtnReinstall.Content" xml:space="preserve">
+    <value>Yeniden yükle</value>
+  </data>
+  <data name="AdvBtnUninstall.Content" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="AdvMaintenanceTitle.Text" xml:space="preserve">
+    <value>Bakım</value>
+  </data>
+  <data name="AdvBtnOpenConfig.Content" xml:space="preserve">
+    <value>config.ini dosyasını aç</value>
+  </data>
+  <data name="AdvBtnOpenLogs.Content" xml:space="preserve">
+    <value>Günlük klasörünü aç</value>
+  </data>
+  <data name="AdvBtnDiagnose.Content" xml:space="preserve">
+    <value>Tanılama çalıştır</value>
+  </data>
+  <data name="AdvPathsTitle.Text" xml:space="preserve">
+    <value>Yollar</value>
+  </data>
+  <data name="AdvUninstallDialogTitle" xml:space="preserve">
+    <value>gdriveHandler'ı Kaldır</value>
+  </data>
+  <data name="AdvUninstallDialogContent" xml:space="preserve">
+    <value>Bu işlem gdriveHandler dosya ilişkilendirmelerini ve kaldırma kayıtlarını siler. config.ini içindeki takma adlarınız ve ayarlarınız korunur. Devam edilsin mi?</value>
+  </data>
+  <data name="AdvUninstallDialogConfirm" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="AdvUninstallDialogCancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="AdvInstallUserSuccess" xml:space="preserve">
+    <value>Başarıyla yüklendi. Windows bu dosyalar için başka bir uygulamayı varsayılan tutuyorsa Ayarlar → Uygulamalar → Varsayılan uygulamalar üzerinden gdriveHandler'ı bir kez seç.</value>
+  </data>
+  <data name="AdvInstallUserFailed" xml:space="preserve">
+    <value>Yükleme başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+  <data name="AdvInstallSystemSuccess" xml:space="preserve">
+    <value>Tüm kullanıcılar için başarıyla yüklendi.</value>
+  </data>
+  <data name="AdvInstallSystemFailed" xml:space="preserve">
+    <value>Sistem geneli yükleme başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+  <data name="AdvRepairSuccess" xml:space="preserve">
+    <value>Onarım tamamlandı.</value>
+  </data>
+  <data name="AdvRepairFailed" xml:space="preserve">
+    <value>Onarım başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+  <data name="AdvReinstallSuccess" xml:space="preserve">
+    <value>Yeniden yükleme başarılı.</value>
+  </data>
+  <data name="AdvReinstallFailed" xml:space="preserve">
+    <value>Yeniden yükleme başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+  <data name="AdvUninstallSuccess" xml:space="preserve">
+    <value>Başarıyla kaldırıldı.</value>
+  </data>
+  <data name="AdvUninstallFailed" xml:space="preserve">
+    <value>Kaldırma başarısız. Ayrıntılar için günlüğe bak.</value>
+  </data>
+  <data name="AdvOpenConfigFailed" xml:space="preserve">
+    <value>config.ini açılamadı: </value>
+  </data>
+  <data name="AdvOpenLogsFailed" xml:space="preserve">
+    <value>Günlük klasörü açılamadı: </value>
+  </data>
+  <data name="AdvDiagnosticsTitle" xml:space="preserve">
+    <value>Tanılama</value>
+  </data>
+  <data name="DialogSuccess" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="DialogError" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="DialogOK" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="DialogClose" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+
+  <!-- Settings page — Logs subtab -->
+  <data name="LogsTitle.Text" xml:space="preserve">
+    <value>Uygulama Günlüğü</value>
+  </data>
+  <data name="LogsBtnRefresh.Content" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="LogsBtnOpenNotepad.Content" xml:space="preserve">
+    <value>Not Defteri'nde Aç</value>
+  </data>
+  <data name="LogsBtnOpenFolder.Content" xml:space="preserve">
+    <value>Günlük klasörünü aç</value>
+  </data>
+  <data name="LogsBtnClear.Content" xml:space="preserve">
+    <value>Günlüğü temizle</value>
+  </data>
+  <data name="LogsClearDialogTitle" xml:space="preserve">
+    <value>Günlüğü temizle</value>
+  </data>
+  <data name="LogsClearDialogContent" xml:space="preserve">
+    <value>Bu işlem günlük dosyasının içeriğini kalıcı olarak siler. Devam edilsin mi?</value>
+  </data>
+  <data name="LogsClearDialogConfirm" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="LogsClearDialogCancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="LogsClearErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="LogsClearErrorContent" xml:space="preserve">
+    <value>Günlük temizlenemedi: </value>
+  </data>
+  <data name="LogsEmpty" xml:space="preserve">
+    <value>(günlük dosyası bulunamadı — ilk kullanımda oluşturulur)</value>
+  </data>
+  <data name="LogsReadError" xml:space="preserve">
+    <value>Günlük dosyası okunamadı: </value>
+  </data>
+
+  <!-- Guide page -->
+  <data name="GuideTitle.Text" xml:space="preserve">
+    <value>Rehber</value>
+  </data>
+  <data name="GuideWhatItDoesTitle.Text" xml:space="preserve">
+    <value>Ne işe yarar</value>
+  </data>
+  <data name="GuideWhatItDoes.Text" xml:space="preserve">
+    <value>gdriveHandler, Google Workspace kısayol dosyaları (.gdoc, .gsheet, .gslides ve diğerleri) için varsayılan açıcı olarak kaydeder. Bu dosyalardan birini açtığında dosyanın içindeki e-posta adresini okur, bu hesapla oturum açılmış Chrome veya Edge profilini bulur ve belgeyi doğru profilde başlatır — artık "Erişim gerekiyor" mesajı yok.</value>
+  </data>
+  <data name="GuideSupportedFilesTitle.Text" xml:space="preserve">
+    <value>Desteklenen dosyalar</value>
+  </data>
+  <data name="GuideHowMatchingTitle.Text" xml:space="preserve">
+    <value>Doğru profili nasıl bulur</value>
+  </data>
+  <data name="GuideHowMatching.Text" xml:space="preserve">
+    <value>1. Kısayol dosyasından e-posta adresini okur.
+2. Her Chrome ve Edge profilinde tam olarak bu e-postayla oturum açılmış olanı arar.
+3. Eşleşme bulunursa dosyayı o profilde açar.
+4. Doğrudan eşleşme yoksa Takma Adlar tablosuna bakar — e-posta başka bir adrese eşlenmişse yeni adresle tekrar dener.
+5. Hâlâ eşleşme yoksa Chrome'un etkin profiliyle açar (Chrome yüklü değilse sistem varsayılan tarayıcısını kullanır).</value>
+  </data>
+  <data name="GuideOpenRightAccountTitle.Text" xml:space="preserve">
+    <value>Doğru hesabı aç — takma adlar</value>
+  </data>
+  <data name="GuideOpenRightAccount.Text" xml:space="preserve">
+    <value>Bir kısayol dosyası eski bir e-posta adresiyle oluşturulduysa (örneğin kişisel Gmail'den iş hesabına geçtikten sonra), Takma Adlar sayfasında bir eşleme ekle:
+
+  Kimden: eski@gmail.com
+  Kime:   guncel@sirket.com
+
+gdriveHandler eski adresi taşıyan dosyaları güncel profiline yönlendirir.</value>
+  </data>
+  <data name="GuideEdgeNoteTitle.Text" xml:space="preserve">
+    <value>Edge hakkında</value>
+  </data>
+  <data name="GuideEdgeNote.Text" xml:space="preserve">
+    <value>Chrome profilleri Google hesabı e-postasıyla eşleştirilir — güvenilirdir. Edge profilleri ise Microsoft hesabıyla eşleştirilir. Edge'de kullanılan bir Google hesabı, yalnızca o Edge profilinin birincil oturum kimliği olduğunda eşleşir. Edge yanlış sonuçlar veriyorsa Ayarlar'dan devre dışı bırakabilirsin.</value>
+  </data>
+  <data name="GuideSampleTitle.Text" xml:space="preserve">
+    <value>Örnek kısayol dosyası</value>
+  </data>
+
+  <!-- Aliases page -->
+  <data name="AliasesTitle.Text" xml:space="preserve">
+    <value>Takma Adlar</value>
+  </data>
+  <data name="AliasesDescription.Text" xml:space="preserve">
+    <value>Eski bir e-posta adresini (Kimden) güncel oturum açılmış adrese (Kime) eşle. Bir kısayol dosyası eski adresi taşıyorsa ve doğrudan profil eşleşmesi bulunamazsa gdriveHandler takma ad hedefiyle tekrar dener.</value>
+  </data>
+  <data name="AliasesColFrom.Text" xml:space="preserve">
+    <value>Kimden (eski adres)</value>
+  </data>
+  <data name="AliasesColTo.Text" xml:space="preserve">
+    <value>Kime (güncel oturum açılmış adres)</value>
+  </data>
+  <data name="AliasesBtnAddRow.Content" xml:space="preserve">
+    <value>Satır ekle</value>
+  </data>
+  <data name="AliasesBtnSave.Content" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="AliasesDetectTitle.Text" xml:space="preserve">
+    <value>Yüklü profilleri algıla</value>
+  </data>
+  <data name="AliasesDetectDesc.Text" xml:space="preserve">
+    <value>Bu bilgisayarda bulunan tüm Chrome ve Edge profillerini oturum açılmış e-postalarıyla listeler. Takma ad için doğru "Kime" adresini kopyalamak için kullan.</value>
+  </data>
+  <data name="AliasesBtnDetect.Content" xml:space="preserve">
+    <value>Profilleri algıla</value>
+  </data>
+  <data name="AliasesDetectDialogTitle" xml:space="preserve">
+    <value>Algılanan profiller</value>
+  </data>
+  <data name="AliasesDetectNone" xml:space="preserve">
+    <value>Oturum açılmış profil bulunamadı.</value>
+  </data>
+  <data name="AliasesSaveSuccessTitle" xml:space="preserve">
+    <value>Kaydedildi</value>
+  </data>
+  <data name="AliasesSaveSuccess" xml:space="preserve">
+    <value>Takma adlar kaydedildi.</value>
+  </data>
+  <data name="AliasesCopyEmail" xml:space="preserve">
+    <value>E-postayı kopyala</value>
+  </data>
+
+  <!-- Advanced paths labels (code-behind) -->
+  <data name="AdvPathInstallDir" xml:space="preserve">
+    <value>Kurulum klasörü</value>
+  </data>
+  <data name="AdvPathConfigFile" xml:space="preserve">
+    <value>Yapılandırma dosyası</value>
+  </data>
+  <data name="AdvPathLogFile" xml:space="preserve">
+    <value>Günlük dosyası</value>
+  </data>
+  <data name="AdvPathSystemDir" xml:space="preserve">
+    <value>Sistem klasörü</value>
+  </data>
+
+  <!-- About page -->
+  <data name="AboutTitle.Text" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="AboutDescription.Text" xml:space="preserve">
+    <value>Google Workspace kısayol dosyalarını, dosyanın içine gömülü hesapla oturum açılmış Chrome veya Edge profilinde açar.</value>
+  </data>
+  <data name="AboutGitHub.Content" xml:space="preserve">
+    <value>GitHub'da görüntüle</value>
+  </data>
+  <data name="AboutPathsTitle.Text" xml:space="preserve">
+    <value>Yollar</value>
+  </data>
+  <data name="AboutLicenseTitle.Text" xml:space="preserve">
+    <value>Lisans</value>
+  </data>
+  <data name="AboutLicense.Text" xml:space="preserve">
+    <value>Kişisel kullanım için ücretsiz. Ayrıntılar için LICENSE dosyasına bak.</value>
+  </data>
+  <data name="AboutIconNoteTitle.Text" xml:space="preserve">
+    <value>Simge notu</value>
+  </data>
+  <data name="AboutIconNote.Text" xml:space="preserve">
+    <value>Uygulama ile gelen simge, Drive tarzı bir işaretin yeniden renklendirilerek türetilmiş halidir. Kişisel kullanım için uygundur; herhangi bir kamuya açık dağıtım öncesinde tamamen özgün bir simgeyle değiştirilmelidir.</value>
+  </data>
+
+  <!-- SelectorBar subtab labels (set from code-behind via Loc.Get) -->
+  <data name="SubtabGeneral" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="SubtabAdvanced" xml:space="preserve">
+    <value>Gelişmiş</value>
+  </data>
+  <data name="SubtabLogs" xml:space="preserve">
+    <value>Günlükler</value>
+  </data>
+
+  <!-- Language switch inline note -->
+  <data name="LangApplying" xml:space="preserve">
+    <value>Uygulanıyor…</value>
+  </data>
+
+</root>

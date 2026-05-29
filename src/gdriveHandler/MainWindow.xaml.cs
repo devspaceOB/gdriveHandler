@@ -3,6 +3,8 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using WinRT.Interop;
 using WinRT;
+using WinUIColor = Windows.UI.Color;
+using WinUIColors = Microsoft.UI.Colors;
 
 namespace GdriveHandler;
 
@@ -21,6 +23,7 @@ public sealed partial class MainWindow : Window
         {
             InitializeComponent();
             SetupWindow();
+            SetupTitleBar();
             SetupMica();
         }
         catch (Exception ex)
@@ -33,12 +36,89 @@ public sealed partial class MainWindow : Window
     private void SetupWindow()
     {
         Title = AppConstants.DisplayName;
-        AppWindow.Resize(new Windows.Graphics.SizeInt32(900, 640));
+
+        // Get the HWND so we can ask the system for the actual DPI of this monitor.
+        var hwnd = WindowNative.GetWindowHandle(this);
+        var dpi = NativeMethods.GetDpiForWindow(hwnd);
+        if (dpi == 0) dpi = 96; // guard against failure (e.g., headless)
+
+        var scale = dpi / 96.0;
+        var w = (int)Math.Round(1000 * scale);
+        var h = (int)Math.Round(700 * scale);
+
+        AppWindow.Resize(new Windows.Graphics.SizeInt32(w, h));
+
+        // Center on the work area of the nearest display.
+        var displayArea = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest);
+        if (displayArea != null)
+        {
+            var wa = displayArea.WorkArea;
+            var x = wa.X + (wa.Width - w) / 2;
+            var y = wa.Y + (wa.Height - h) / 2;
+            AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
+        }
+
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {
             presenter.IsMinimizable = true;
             presenter.IsMaximizable = true;
         }
+
+        // Set the taskbar / window icon to the real App.ico file (resolved next to the exe).
+        try
+        {
+            var exeDir = Path.GetDirectoryName(Environment.ProcessPath) ?? AppDomain.CurrentDomain.BaseDirectory;
+            var icoPath = Path.Combine(exeDir, "Assets", "App.ico");
+            if (File.Exists(icoPath))
+            {
+                AppWindow.SetIcon(icoPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            _log.Warn("Could not set window icon: " + ex.Message);
+        }
+    }
+
+    private void SetupTitleBar()
+    {
+        // Extend content into the title bar area so Mica fills the caption strip.
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(TitleBarGrid);
+
+        ApplyTitleBarButtonColors();
+
+        // Re-apply caption button colors when the theme changes (Dark ↔ Light).
+        if (Content is FrameworkElement fe)
+        {
+            fe.ActualThemeChanged += (_, _) => ApplyTitleBarButtonColors();
+        }
+    }
+
+    private void ApplyTitleBarButtonColors()
+    {
+        var titleBar = AppWindow.TitleBar;
+
+        // Let Mica show through the caption button background.
+        titleBar.ButtonBackgroundColor = WinUIColors.Transparent;
+        titleBar.ButtonInactiveBackgroundColor = WinUIColors.Transparent;
+
+        // Pick the foreground colour that matches the current theme so the
+        // caption buttons (close / max / min) remain visible in both Light and Dark.
+        var theme = (Content as FrameworkElement)?.ActualTheme ?? ElementTheme.Default;
+        var isDark = theme == ElementTheme.Dark ||
+                     (theme == ElementTheme.Default &&
+                      Application.Current.RequestedTheme == ApplicationTheme.Dark);
+
+        var fgColor = isDark ? WinUIColors.White : WinUIColors.Black;
+        var fgHover = isDark ? WinUIColor.FromArgb(255, 220, 220, 220) : WinUIColor.FromArgb(255, 40, 40, 40);
+
+        titleBar.ButtonForegroundColor = fgColor;
+        titleBar.ButtonInactiveForegroundColor = isDark
+            ? WinUIColor.FromArgb(255, 150, 150, 150)
+            : WinUIColor.FromArgb(255, 120, 120, 120);
+        titleBar.ButtonHoverForegroundColor = fgHover;
+        titleBar.ButtonPressedForegroundColor = fgColor;
     }
 
     private void SetupMica()
@@ -104,7 +184,6 @@ public sealed partial class MainWindow : Window
             "guide"    => typeof(Pages.GuidePage),
             "aliases"  => typeof(Pages.AliasesPage),
             "settings" => typeof(Pages.SettingsPage),
-            "logs"     => typeof(Pages.LogViewerPage),
             "about"    => typeof(Pages.AboutPage),
             _          => typeof(Pages.HomePage),
         };

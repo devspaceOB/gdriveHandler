@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema Version 2.0
+    See https://docs.microsoft.com/dotnet/api/system.resources.resxresourcewriter
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Navigation items (x:Uid on NavigationViewItem sets .Content) -->
+  <data name="NavHome.Content" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="NavGuide.Content" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="NavAliases.Content" xml:space="preserve">
+    <value>Aliases</value>
+  </data>
+  <data name="NavSettings.Content" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="NavAbout.Content" xml:space="preserve">
+    <value>About</value>
+  </data>
+
+  <!-- App shell -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>gdriveHandler</value>
+  </data>
+
+  <!-- Home page -->
+  <data name="HomeTagline.Text" xml:space="preserve">
+    <value>Open Google Workspace files in the right browser profile, every time.</value>
+  </data>
+  <data name="HomeStatusInstalledUser" xml:space="preserve">
+    <value>Installed (per-user)</value>
+  </data>
+  <data name="HomeStatusInstalledSystem" xml:space="preserve">
+    <value>Installed (system-wide)</value>
+  </data>
+  <data name="HomeStatusNotInstalled" xml:space="preserve">
+    <value>Not installed</value>
+  </data>
+  <data name="HomeStatusAllSet" xml:space="preserve">
+    <value>You're all set. gdriveHandler is active and ready.</value>
+  </data>
+  <data name="HomeStatusNotInstalledDetail" xml:space="preserve">
+    <value>Set up gdriveHandler to automatically open Google Workspace files in the correct profile.</value>
+  </data>
+  <data name="HomeBtnSetup.Content" xml:space="preserve">
+    <value>Set up gdriveHandler</value>
+  </data>
+  <data name="HomeHowItWorksTitle.Text" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="HomeStep1.Text" xml:space="preserve">
+    <value>1. You double-click a .gdoc, .gsheet, or other Google Workspace file.</value>
+  </data>
+  <data name="HomeStep2.Text" xml:space="preserve">
+    <value>2. gdriveHandler reads the email address stored in the file and finds the matching Chrome or Edge profile.</value>
+  </data>
+  <data name="HomeStep3.Text" xml:space="preserve">
+    <value>3. The file opens in that exact profile — no more "You need access" errors.</value>
+  </data>
+  <data name="HomeLinkGuide.Content" xml:space="preserve">
+    <value>Read the full guide</value>
+  </data>
+  <data name="HomeLinkAliases.Content" xml:space="preserve">
+    <value>Manage aliases</value>
+  </data>
+  <data name="HomeInstallSuccessTitle" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="HomeInstallSuccess" xml:space="preserve">
+    <value>Installed successfully. If Windows keeps another app as the default for these files, set gdriveHandler once via Settings → Apps → Default apps.</value>
+  </data>
+  <data name="HomeInstallFailed" xml:space="preserve">
+    <value>Installation failed. Check the log for details.</value>
+  </data>
+
+  <!-- Settings page — General subtab -->
+  <data name="SettingsTitle.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SettingsTabGeneral.Content" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="SettingsTabAdvanced.Content" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="SettingsTabLogs.Content" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="SettingsNewWindowLabel.Text" xml:space="preserve">
+    <value>Open in new window</value>
+  </data>
+  <data name="SettingsNewWindowDesc.Text" xml:space="preserve">
+    <value>Adds --new-window flag when launching a browser profile</value>
+  </data>
+  <data name="SettingsEdgeLabel.Text" xml:space="preserve">
+    <value>Include Edge profiles</value>
+  </data>
+  <data name="SettingsEdgeDesc.Text" xml:space="preserve">
+    <value>Disable if Edge causes false-positive matches</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="SettingsLanguageDesc.Text" xml:space="preserve">
+    <value>UI display language</value>
+  </data>
+  <data name="SettingsAdvancedModeLabel.Text" xml:space="preserve">
+    <value>Advanced settings</value>
+  </data>
+  <data name="SettingsAdvancedModeDesc.Text" xml:space="preserve">
+    <value>Show install management, diagnostics, and log viewer</value>
+  </data>
+  <data name="SettingsSavedConfirm.Text" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+
+  <!-- Settings page — Advanced subtab -->
+  <data name="AdvSetupTitle.Text" xml:space="preserve">
+    <value>Setup &amp; Management</value>
+  </data>
+  <data name="AdvBtnInstallUser.Content" xml:space="preserve">
+    <value>Install for me</value>
+  </data>
+  <data name="AdvBtnInstallSystem.Content" xml:space="preserve">
+    <value>Install for all users (admin)</value>
+  </data>
+  <data name="AdvBtnRepair.Content" xml:space="preserve">
+    <value>Repair</value>
+  </data>
+  <data name="AdvBtnReinstall.Content" xml:space="preserve">
+    <value>Reinstall</value>
+  </data>
+  <data name="AdvBtnUninstall.Content" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="AdvMaintenanceTitle.Text" xml:space="preserve">
+    <value>Maintenance</value>
+  </data>
+  <data name="AdvBtnOpenConfig.Content" xml:space="preserve">
+    <value>Open config.ini</value>
+  </data>
+  <data name="AdvBtnOpenLogs.Content" xml:space="preserve">
+    <value>Open logs folder</value>
+  </data>
+  <data name="AdvBtnDiagnose.Content" xml:space="preserve">
+    <value>Run diagnostics</value>
+  </data>
+  <data name="AdvPathsTitle.Text" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="AdvUninstallDialogTitle" xml:space="preserve">
+    <value>Uninstall gdriveHandler</value>
+  </data>
+  <data name="AdvUninstallDialogContent" xml:space="preserve">
+    <value>This will remove gdriveHandler file associations and uninstall entries. Your aliases and settings in config.ini will be kept. Proceed?</value>
+  </data>
+  <data name="AdvUninstallDialogConfirm" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="AdvUninstallDialogCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AdvInstallUserSuccess" xml:space="preserve">
+    <value>Installed successfully. If Windows keeps another app as the default for these files, set gdriveHandler once via Settings → Apps → Default apps.</value>
+  </data>
+  <data name="AdvInstallUserFailed" xml:space="preserve">
+    <value>Installation failed. Check the log for details.</value>
+  </data>
+  <data name="AdvInstallSystemSuccess" xml:space="preserve">
+    <value>Installed for all users successfully.</value>
+  </data>
+  <data name="AdvInstallSystemFailed" xml:space="preserve">
+    <value>System installation failed. Check the log for details.</value>
+  </data>
+  <data name="AdvRepairSuccess" xml:space="preserve">
+    <value>Repair complete.</value>
+  </data>
+  <data name="AdvRepairFailed" xml:space="preserve">
+    <value>Repair failed. Check the log for details.</value>
+  </data>
+  <data name="AdvReinstallSuccess" xml:space="preserve">
+    <value>Reinstalled successfully.</value>
+  </data>
+  <data name="AdvReinstallFailed" xml:space="preserve">
+    <value>Reinstall failed. Check the log for details.</value>
+  </data>
+  <data name="AdvUninstallSuccess" xml:space="preserve">
+    <value>Uninstalled successfully.</value>
+  </data>
+  <data name="AdvUninstallFailed" xml:space="preserve">
+    <value>Uninstall failed. Check the log for details.</value>
+  </data>
+  <data name="AdvOpenConfigFailed" xml:space="preserve">
+    <value>Could not open config.ini: </value>
+  </data>
+  <data name="AdvOpenLogsFailed" xml:space="preserve">
+    <value>Could not open logs folder: </value>
+  </data>
+  <data name="AdvDiagnosticsTitle" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="DialogSuccess" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="DialogError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="DialogOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DialogClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+
+  <!-- Settings page — Logs subtab -->
+  <data name="LogsTitle.Text" xml:space="preserve">
+    <value>Application Log</value>
+  </data>
+  <data name="LogsBtnRefresh.Content" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="LogsBtnOpenNotepad.Content" xml:space="preserve">
+    <value>Open in Notepad</value>
+  </data>
+  <data name="LogsBtnOpenFolder.Content" xml:space="preserve">
+    <value>Open logs folder</value>
+  </data>
+  <data name="LogsBtnClear.Content" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="LogsClearDialogTitle" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="LogsClearDialogContent" xml:space="preserve">
+    <value>This will permanently delete the log file contents. Proceed?</value>
+  </data>
+  <data name="LogsClearDialogConfirm" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="LogsClearDialogCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="LogsClearErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="LogsClearErrorContent" xml:space="preserve">
+    <value>Could not clear log: </value>
+  </data>
+  <data name="LogsEmpty" xml:space="preserve">
+    <value>(no log file found — log is created on first use)</value>
+  </data>
+  <data name="LogsReadError" xml:space="preserve">
+    <value>Could not read log file: </value>
+  </data>
+
+  <!-- Guide page -->
+  <data name="GuideTitle.Text" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="GuideWhatItDoesTitle.Text" xml:space="preserve">
+    <value>What it does</value>
+  </data>
+  <data name="GuideWhatItDoes.Text" xml:space="preserve">
+    <value>gdriveHandler registers itself as the default opener for Google Workspace shortcut files (.gdoc, .gsheet, .gslides, and more). When you open one of these files, it reads the email address stored inside the file, finds the Chrome or Edge profile signed in with that account, and launches the document in the right profile — so you always land in the right account instead of seeing "You need access."</value>
+  </data>
+  <data name="GuideSupportedFilesTitle.Text" xml:space="preserve">
+    <value>Supported files</value>
+  </data>
+  <data name="GuideHowMatchingTitle.Text" xml:space="preserve">
+    <value>How it finds the right profile</value>
+  </data>
+  <data name="GuideHowMatching.Text" xml:space="preserve">
+    <value>1. Reads the email address from the shortcut file.
+2. Checks every Chrome and Edge profile for one signed in with that exact email.
+3. If a match is found, opens the file in that profile.
+4. If no direct match, checks your Aliases table — if the email is mapped to another address, tries again with the mapped address.
+5. If still no match, opens in Chrome's active profile (or your system default browser if Chrome is not installed).</value>
+  </data>
+  <data name="GuideOpenRightAccountTitle.Text" xml:space="preserve">
+    <value>Open the right account — aliases</value>
+  </data>
+  <data name="GuideOpenRightAccount.Text" xml:space="preserve">
+    <value>If a shortcut file was created with an old email address (for example after switching from a personal Gmail to a work account), add an alias on the Aliases page:
+
+  From: old@gmail.com
+  To:   current@company.com
+
+gdriveHandler will then route files with the old address to your current profile.</value>
+  </data>
+  <data name="GuideEdgeNoteTitle.Text" xml:space="preserve">
+    <value>Edge note</value>
+  </data>
+  <data name="GuideEdgeNote.Text" xml:space="preserve">
+    <value>Chrome profiles are matched by Google account email — reliable. Edge profiles are matched by Microsoft account. A Google account used in an Edge browser session is only matched when it is the Edge profile's primary signed-in identity. If Edge causes wrong matches, you can disable it in Settings.</value>
+  </data>
+  <data name="GuideSampleTitle.Text" xml:space="preserve">
+    <value>Example shortcut file</value>
+  </data>
+
+  <!-- Aliases page -->
+  <data name="AliasesTitle.Text" xml:space="preserve">
+    <value>Aliases</value>
+  </data>
+  <data name="AliasesDescription.Text" xml:space="preserve">
+    <value>Map an old email address (From) to the current signed-in email (To). When a shortcut file carries the old address and no direct profile match is found, gdriveHandler will retry the match using the alias target.</value>
+  </data>
+  <data name="AliasesColFrom.Text" xml:space="preserve">
+    <value>From (old address)</value>
+  </data>
+  <data name="AliasesColTo.Text" xml:space="preserve">
+    <value>To (current signed-in address)</value>
+  </data>
+  <data name="AliasesBtnAddRow.Content" xml:space="preserve">
+    <value>Add row</value>
+  </data>
+  <data name="AliasesBtnSave.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AliasesDetectTitle.Text" xml:space="preserve">
+    <value>Detect installed profiles</value>
+  </data>
+  <data name="AliasesDetectDesc.Text" xml:space="preserve">
+    <value>List all Chrome and Edge profiles found on this machine with their signed-in email. Use this to copy the correct "To" address for an alias.</value>
+  </data>
+  <data name="AliasesBtnDetect.Content" xml:space="preserve">
+    <value>Detect profiles</value>
+  </data>
+  <data name="AliasesDetectDialogTitle" xml:space="preserve">
+    <value>Detected profiles</value>
+  </data>
+  <data name="AliasesDetectNone" xml:space="preserve">
+    <value>No signed-in profiles found.</value>
+  </data>
+  <data name="AliasesSaveSuccessTitle" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="AliasesSaveSuccess" xml:space="preserve">
+    <value>Aliases saved.</value>
+  </data>
+  <data name="AliasesCopyEmail" xml:space="preserve">
+    <value>Copy email</value>
+  </data>
+
+  <!-- Advanced paths labels (code-behind) -->
+  <data name="AdvPathInstallDir" xml:space="preserve">
+    <value>Install dir</value>
+  </data>
+  <data name="AdvPathConfigFile" xml:space="preserve">
+    <value>Config file</value>
+  </data>
+  <data name="AdvPathLogFile" xml:space="preserve">
+    <value>Log file</value>
+  </data>
+  <data name="AdvPathSystemDir" xml:space="preserve">
+    <value>System dir</value>
+  </data>
+
+  <!-- SelectorBar subtab labels (set from code-behind via Loc.Get) -->
+  <data name="SubtabGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="SubtabAdvanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="SubtabLogs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+
+  <!-- Language switch inline note -->
+  <data name="LangApplying" xml:space="preserve">
+    <value>Applying…</value>
+  </data>
+
+  <!-- About page -->
+  <data name="AboutTitle.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutDescription.Text" xml:space="preserve">
+    <value>Opens Google Workspace shortcut files in the Chrome or Edge profile signed in with the account embedded in the file.</value>
+  </data>
+  <data name="AboutGitHub.Content" xml:space="preserve">
+    <value>View on GitHub</value>
+  </data>
+  <data name="AboutPathsTitle.Text" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="AboutLicenseTitle.Text" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="AboutLicense.Text" xml:space="preserve">
+    <value>Free for personal use. See LICENSE file for details.</value>
+  </data>
+  <data name="AboutIconNoteTitle.Text" xml:space="preserve">
+    <value>Icon note</value>
+  </data>
+  <data name="AboutIconNote.Text" xml:space="preserve">
+    <value>The bundled icon is a recolored, derivative Drive-style mark. Acceptable for personal use; replace with a fully original icon before any public distribution.</value>
+  </data>
+
+</root>

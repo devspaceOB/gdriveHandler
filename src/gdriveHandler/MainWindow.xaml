@@ -5,9 +5,52 @@
     Title="gdriveHandler">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Custom title bar: drag region, app icon, and title -->
+        <Grid x:Name="TitleBarGrid"
+              Grid.Row="0"
+              Height="40"
+              Background="Transparent"
+              AutomationProperties.AutomationId="TitleBarGrid">
+            <Grid.ColumnDefinitions>
+                <!-- Left padding to clear the caption buttons area -->
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Caption-buttons spacer: NavigationView pane width when expanded (~300px) is
+                 handled by the NavigationView itself; we only need a small left margin here -->
+            <Border Grid.Column="0" Width="16"/>
+
+            <Image Grid.Column="1"
+                   x:Name="TitleBarIcon"
+                   Width="16" Height="16"
+                   VerticalAlignment="Center"
+                   Margin="0,0,8,0"
+                   Source="ms-appx:///Assets/AppLogo.png"
+                   AutomationProperties.AutomationId="TitleBarIcon"
+                   AutomationProperties.Name="gdriveHandler icon"/>
+
+            <TextBlock Grid.Column="2"
+                       x:Name="TitleBarText"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                       Text="gdriveHandler"
+                       AutomationProperties.AutomationId="TitleBarText"/>
+        </Grid>
+
+        <!-- Navigation shell -->
         <NavigationView x:Name="NavView"
+            Grid.Row="1"
             AutomationProperties.AutomationId="NavView"
             PaneDisplayMode="Left"
+            OpenPaneLength="220"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
             CompactModeThresholdWidth="720"
@@ -16,40 +59,34 @@
             Loaded="NavView_Loaded">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Tag="home" Content="Home"
+                <NavigationViewItem x:Uid="NavHome" Tag="home"
                     AutomationProperties.AutomationId="NavHome">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE80F;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Tag="guide" Content="Guide"
+                <NavigationViewItem x:Uid="NavGuide" Tag="guide"
                     AutomationProperties.AutomationId="NavGuide">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE897;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Tag="aliases" Content="Aliases"
+                <NavigationViewItem x:Uid="NavAliases" Tag="aliases"
                     AutomationProperties.AutomationId="NavAliases">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE716;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Tag="settings" Content="Settings"
+                <NavigationViewItem x:Uid="NavSettings" Tag="settings"
                     AutomationProperties.AutomationId="NavSettings">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Tag="logs" Content="Logs"
-                    AutomationProperties.AutomationId="NavLogs">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE7C3;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Tag="about" Content="About"
+                <NavigationViewItem x:Uid="NavAbout" Tag="about"
                     AutomationProperties.AutomationId="NavAbout">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE946;"/>

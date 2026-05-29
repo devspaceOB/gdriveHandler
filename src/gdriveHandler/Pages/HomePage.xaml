@@ -4,68 +4,78 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Loaded="Page_Loaded">
 
-    <ScrollViewer Padding="32,24,32,24">
-        <StackPanel Spacing="16" MaxWidth="680" HorizontalAlignment="Left">
+    <ScrollViewer Padding="24,20,24,20">
+        <StackPanel Spacing="24" MaxWidth="720" HorizontalAlignment="Left">
 
-            <!-- Status Card -->
-            <Border x:Name="StatusBorder" CornerRadius="8" Padding="16"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                <StackPanel Spacing="4">
-                    <TextBlock x:Name="StatusTitle" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock x:Name="StatusDetail"
+            <!-- Hero -->
+            <StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Center">
+                <Image Width="64" Height="64"
+                       Source="ms-appx:///Assets/AppLogo.png"
+                       AutomationProperties.AutomationId="HomeAppLogo"
+                       AutomationProperties.Name="gdriveHandler icon"/>
+                <StackPanel Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="gdriveHandler"
+                               Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock x:Name="HeroTagline"
+                               x:Uid="HomeTagline"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                TextWrapping="Wrap"/>
                 </StackPanel>
+            </StackPanel>
+
+            <!-- Status card -->
+            <Border x:Name="StatusBorder"
+                    CornerRadius="{ThemeResource ControlCornerRadius}"
+                    Padding="20"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="12">
+                    <TextBlock x:Name="StatusTitle"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="StatusDetail"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               TextWrapping="Wrap"/>
+                    <!-- CTA shown only when not installed -->
+                    <Button x:Name="BtnSetup"
+                            x:Uid="HomeBtnSetup"
+                            AutomationProperties.AutomationId="BtnSetupGdriveHandler"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Visibility="Collapsed"
+                            Click="BtnSetup_Click"/>
+                </StackPanel>
             </Border>
 
-            <!-- Description -->
-            <TextBlock TextWrapping="Wrap"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                Opens Google Workspace shortcuts (.gdoc, .gsheet, .gslides, …) in the Chrome or Edge
-                profile signed in with the account stored in the file — so multi-account users always
-                land in the right profile instead of seeing "you need access".
-            </TextBlock>
+            <!-- How it works -->
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="HomeHowItWorksTitle"
+                           Style="{StaticResource BodyStrongTextBlockStyle}"/>
 
-            <!-- Actions -->
-            <TextBlock Text="Installation" Style="{StaticResource BodyStrongTextBlockStyle}"
-                       Margin="0,8,0,0"/>
-            <StackPanel Orientation="Horizontal" Spacing="8" x:Name="ActionPanel">
-                <Button x:Name="BtnInstallUser"
-                        AutomationProperties.AutomationId="BtnInstallUser"
-                        Content="Install for me (no admin)"
-                        Click="BtnInstallUser_Click"
-                        Style="{StaticResource AccentButtonStyle}"/>
-                <Button x:Name="BtnInstallSystem"
-                        AutomationProperties.AutomationId="BtnInstallSystem"
-                        Content="Install for all users (admin)"
-                        Click="BtnInstallSystem_Click"/>
-                <Button x:Name="BtnRepair"
-                        AutomationProperties.AutomationId="BtnRepair"
-                        Content="Repair"
-                        Click="BtnRepair_Click"/>
-                <Button x:Name="BtnUninstall"
-                        AutomationProperties.AutomationId="BtnUninstall"
-                        Content="Uninstall"
-                        Click="BtnUninstall_Click"/>
+                <Border CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Padding="20"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <TextBlock x:Uid="HomeStep1" TextWrapping="Wrap" LineHeight="20"/>
+                        <TextBlock x:Uid="HomeStep2" TextWrapping="Wrap" LineHeight="20"/>
+                        <TextBlock x:Uid="HomeStep3" TextWrapping="Wrap" LineHeight="20"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <HyperlinkButton x:Name="LinkGuide"
+                                     x:Uid="HomeLinkGuide"
+                                     AutomationProperties.AutomationId="HomeLinkGuide"
+                                     Click="LinkGuide_Click"/>
+                    <TextBlock Text="·" VerticalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <HyperlinkButton x:Name="LinkAliases"
+                                     x:Uid="HomeLinkAliases"
+                                     AutomationProperties.AutomationId="HomeLinkAliases"
+                                     Click="LinkAliases_Click"/>
+                </StackPanel>
             </StackPanel>
-
-            <!-- Utilities -->
-            <TextBlock Text="Utilities" Style="{StaticResource BodyStrongTextBlockStyle}"
-                       Margin="0,8,0,0"/>
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button AutomationProperties.AutomationId="BtnOpenConfig"
-                        Content="Open config.ini" Click="BtnOpenConfig_Click"/>
-                <Button AutomationProperties.AutomationId="BtnOpenLogs"
-                        Content="Open logs folder" Click="BtnOpenLogs_Click"/>
-                <Button AutomationProperties.AutomationId="BtnDiagnose"
-                        Content="Run diagnostics" Click="BtnDiagnose_Click"/>
-            </StackPanel>
-
-            <!-- Paths info -->
-            <TextBlock Text="Paths" Style="{StaticResource BodyStrongTextBlockStyle}"
-                       Margin="0,8,0,0"/>
-            <StackPanel x:Name="PathsPanel" Spacing="4"/>
 
         </StackPanel>
     </ScrollViewer>

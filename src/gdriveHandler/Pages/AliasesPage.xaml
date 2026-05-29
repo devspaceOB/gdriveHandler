@@ -4,29 +4,37 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Loaded="Page_Loaded">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Padding="32,24,32,24" RowSpacing="12">
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Padding="24,20,24,20" RowSpacing="12"
+          MaxWidth="720" HorizontalAlignment="Left">
 
-        <TextBlock Grid.Row="0" Text="Aliases" Style="{StaticResource TitleTextBlockStyle}"/>
+        <TextBlock Grid.Row="0"
+                   x:Uid="AliasesTitle"
+                   Style="{StaticResource TitleTextBlockStyle}"/>
 
-        <TextBlock Grid.Row="1" TextWrapping="Wrap"
-                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-            Map an old email address (From) to the current signed-in email (To).
-            When a shortcut file carries the old address and no direct profile match is found,
-            gdriveHandler will retry the match using the alias target.
-        </TextBlock>
+        <TextBlock Grid.Row="1"
+                   x:Uid="AliasesDescription"
+                   TextWrapping="Wrap"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
         <!-- Alias list -->
-        <Border Grid.Row="2" CornerRadius="8"
+        <Border Grid.Row="2"
+                CornerRadius="{ThemeResource ControlCornerRadius}"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1">
             <Grid RowDefinitions="Auto,*">
                 <!-- Column headers -->
-                <Grid Grid.Row="0" ColumnDefinitions="*,*,Auto" Padding="12,8,12,8"
-                      BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
-                    <TextBlock Grid.Column="0" Text="From (old address)"
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,*,Auto"
+                      Padding="12,8,12,8"
+                      BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                      BorderThickness="0,0,0,1">
+                    <TextBlock Grid.Column="0"
+                               x:Uid="AliasesColFrom"
                                Style="{StaticResource CaptionTextBlockStyle}"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                    <TextBlock Grid.Column="1" Text="To (current signed-in address)"
+                    <TextBlock Grid.Column="1"
+                               x:Uid="AliasesColTo"
                                Style="{StaticResource CaptionTextBlockStyle}"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     <TextBlock Grid.Column="2" Width="36"/>
@@ -62,26 +70,31 @@
 
         <!-- Row action buttons -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-            <Button AutomationProperties.AutomationId="BtnAddAlias"
-                    Content="Add row" Click="BtnAddRow_Click"/>
-            <Button AutomationProperties.AutomationId="BtnSaveAliases"
-                    Content="Save" Click="BtnSave_Click"
-                    Style="{StaticResource AccentButtonStyle}"/>
+            <Button x:Uid="AliasesBtnAddRow"
+                    AutomationProperties.AutomationId="BtnAddAlias"
+                    Click="BtnAddRow_Click"/>
+            <Button x:Uid="AliasesBtnSave"
+                    AutomationProperties.AutomationId="BtnSaveAliases"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="BtnSave_Click"/>
         </StackPanel>
 
         <!-- Detect profiles section -->
-        <Border Grid.Row="4" CornerRadius="8" Padding="16"
+        <Border Grid.Row="4"
+                CornerRadius="{ThemeResource ControlCornerRadius}"
+                Padding="16"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1">
             <StackPanel Spacing="8">
-                <TextBlock Text="Detect installed profiles" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                <TextBlock TextWrapping="Wrap"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                    List all Chrome and Edge profiles found on this machine with their signed-in email.
-                    Use this to copy the correct "To" address for an alias.
-                </TextBlock>
-                <Button AutomationProperties.AutomationId="BtnDetectProfiles"
-                        Content="Detect profiles" Click="BtnDetectProfiles_Click"/>
+                <TextBlock x:Uid="AliasesDetectTitle"
+                           Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                <TextBlock x:Uid="AliasesDetectDesc"
+                           TextWrapping="Wrap"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <Button x:Uid="AliasesBtnDetect"
+                        AutomationProperties.AutomationId="BtnDetectProfiles"
+                        Click="BtnDetectProfiles_Click"/>
             </StackPanel>
         </Border>
 

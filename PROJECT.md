@@ -3,7 +3,7 @@
 > **Single source of truth for this project.** This document captures the goals, architecture, tech stack, build/deploy process, hard-won gotchas, and changelog. It is detailed enough to rebuild a near-identical project from scratch, and to onboard future iteration.
 
 - **Repo:** https://github.com/devspaceOB/gdriveHandler
-- **Current version:** 1.0.1
+- **Current version:** 1.1.0
 - **Author / publisher:** devSpaceOB (devspaceob@gmail.com)
 - **License:** Personal Use (free for personal, non-commercial use) — see [LICENSE](LICENSE)
 - **Platform:** Windows 10 (1809+) / Windows 11, x64
@@ -106,9 +106,10 @@ file → validate ext → read → ShortcutParser.Parse → UrlBuilder.BuildFina
 - Registers ProgID + 11 extensions + `OpenWithProgids` + ARP uninstall entry; fires `SHChangeNotify(SHCNE_ASSOCCHANGED)`.
 
 ### WinUI 3 UI
-- `App.xaml` / `App.xaml.cs` — `Application`; **merges `<XamlControlsResources>`** (mandatory, see §8); has an `UnhandledException` handler that logs XAML errors.
-- `MainWindow.xaml(.cs)` — `NavigationView` shell, Mica backdrop (`MicaController`, falls back gracefully), `Frame` navigation, custom window sizing (900×640).
-- `Pages/` — `HomePage`, `GuidePage`, `AliasesPage`, `SettingsPage`, `LogViewerPage`, `AboutPage`. Each is a `Page` navigated into `ContentFrame`.
+- `App.xaml` / `App.xaml.cs` — `Application`; **merges `<XamlControlsResources>`** (mandatory, see §8); `UnhandledException` handler logs XAML errors; `SwitchLanguage()` recreates the window in place for the in-app language switch.
+- `MainWindow.xaml(.cs)` — `NavigationView` shell (`OpenPaneLength=220`), Mica backdrop (`MicaController`, falls back gracefully), `Frame` navigation, custom **extended title bar** (app-icon favicon + theme-following title), `AppWindow.SetIcon`, **DPI-aware** sizing (base 1000×700 scaled by `GetDpiForWindow`, centered on the work area).
+- `Pages/` — `HomePage`, `GuidePage`, `AliasesPage`, `SettingsPage`, `AboutPage`. Settings hosts **General / Advanced / Logs** subtabs (`SelectorBar`); Advanced+Logs are gated by the **Advanced Settings** toggle. (`LogViewerPage` was folded into Settings → Logs and removed in 1.1.0.)
+- Localization: `Core/Loc.cs` (ResourceLoader wrapper) + `Strings/{en-US,tr-TR}/Resources.resw` — `x:Uid` in XAML, `Loc.Get(key)` in code-behind. English + Türkçe, selectable in Settings.
 
 ---
 
@@ -120,10 +121,11 @@ gdriveHandler/
 │   ├── workflows/build.yml      # CI: tests, publish folder, zip, release on tag
 │   └── RELEASE_NOTES.md         # Body for GitHub releases
 ├── src/gdriveHandler/
-│   ├── Core/                    # UI-free business logic (10 files)
+│   ├── Core/                    # UI-free business logic + Loc.cs (localization helper)
 │   ├── Installer/Installer.cs   # User + system install/uninstall/repair
-│   ├── Pages/                   # 6 WinUI 3 XAML pages (.xaml + .xaml.cs)
-│   ├── Assets/                  # App.ico, d.ico
+│   ├── Pages/                   # 5 WinUI 3 XAML pages (Home/Guide/Aliases/Settings/About)
+│   ├── Strings/                 # en-US/ + tr-TR/ Resources.resw (localization)
+│   ├── Assets/                  # App.ico, d.ico, AppLogo.png
 │   ├── App.xaml(.cs)            # Application + XamlControlsResources + UnhandledException
 │   ├── MainWindow.xaml(.cs)     # NavigationView shell + Mica
 │   ├── Program.cs               # Entry point (dual-mode)
@@ -267,6 +269,13 @@ These cost real debugging time. The GUI silently fail-fasted (no window, no erro
 4. **Use `<FontIcon Glyph="..."/>`, not `Icon="Symbol"` strings, on NavigationViewItem.**
    `Icon="Info"` crashes — `Info` is not a valid `Symbol` enum value. Glyphs used: Home `E80F`, Guide/Help `E897`, Aliases/People `E716`, Settings `E713`, Logs/Page `E7C3`, About/Info `E946`.
 
+**GUI / localization gotchas added in 1.1.0 (do NOT regress):**
+
+5. **`AppWindow.Resize` takes PHYSICAL pixels, not logical.** On a 125%/150%/175% display a raw `Resize(900,640)` comes up tiny/garbled. Scale by `GetDpiForWindow(hwnd)/96.0` (see `MainWindow.SetupWindow`).
+6. **Images referenced from `Pages/*.xaml` need an absolute `ms-appx:///Assets/...` URI.** A relative `Source="Assets/AppLogo.png"` on a page under `Pages/` resolves to `ms-appx:///Pages/Assets/...` and silently shows nothing. Root-level `MainWindow.xaml` can use the relative form.
+7. **`Assets\App.ico` must be `Content` (copied to output)** for `AppWindow.SetIcon` to find it at runtime (taskbar/thumbnail icon). `<ApplicationIcon>` only embeds the icon into the exe — it does not place the file next to the exe.
+8. **Localization wiring:** `InvariantGlobalization=false`; `.resw` under `Strings/**` are auto-discovered (no explicit `PRIResource`); the built PRI is `gdriveHandler.pri` (assembly-name convention for unpackaged apps), loaded by `Core/Loc.cs`. Set `Microsoft.Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride` **before** `Application.Start` (see `Program.LaunchGui`). The in-app language switch (`App.SwitchLanguage`) sets the override, calls **`Loc.Reset()`** (drops the cached `ResourceLoader` so code-behind strings re-resolve), then recreates the window — no process restart.
+
 **Debugging aid baked in:** `App.UnhandledException` logs the real XAML exception to `launcher.log` (otherwise startup crashes leave no trace). Diagnose future GUI crashes by checking `%LOCALAPPDATA%\Programs\gdriveHandler\logs\launcher.log` and the Windows **Application** event log (faulting module + exception code).
 
 ---
@@ -380,6 +389,27 @@ See [ROADMAP.md](ROADMAP.md) for the full feature list, v2.0 ideas, and known li
 
 > Format: [Keep a Changelog](https://keepachangelog.com/) style. Newest first. Update on every release.
 
+### [1.1.0] — 2026-05-29
+**GUI overhaul + Türkçe localization (Phase 1).**
+
+**Fixed**
+- **Garbled window size** on high-DPI: `AppWindow.Resize` uses physical pixels; now DPI-scaled (base 1000×700) and centered.
+- **Title bar white in Dark mode**: replaced the default caption with a custom extended, theme-following title bar that also shows the app icon (favicon).
+- **App icon missing in-GUI**: Home hero and About now show the real icon (`Assets/AppLogo.png` via `ms-appx:///`); window/taskbar/thumbnail icon set via `AppWindow.SetIcon` (`App.ico` now shipped as Content). Replaced the About "G" placeholder.
+- Settings toggle/combo right-alignment (`MinWidth=0` removes the empty ToggleSwitch content gap); consistent page width (`MaxWidth=720`); tighter edge padding (24,20).
+
+**Changed**
+- **Navigation**: Logs removed from the top-level nav. Settings reorganized into **General / Advanced / Logs** subtabs (`SelectorBar`); Advanced + Logs appear only when the new **Advanced Settings** toggle is on. Install / Install-system / Repair / Reinstall / Uninstall, Open config, Open logs, diagnostics, Paths, and the log viewer all moved into Settings → Advanced/Logs. `LogViewerPage` removed.
+- **Home** redesigned: hero + status card with a single "Set up" CTA when not installed + plain-English "How it works".
+- **Guide** rewritten: sectioned, plain English, bullet/numbered lists; removed the Gmail→Workspace section; `.fyi`→`.com` in the example.
+- **Dialogs**: Detect-profiles is now a larger card `ListView`; diagnostics enlarged.
+- Narrower nav pane (`OpenPaneLength=220`).
+
+**Added**
+- **Türkçe** localization across all user-facing UI: `Core/Loc.cs` + `Strings/{en-US,tr-TR}/Resources.resw` (121 keys), `x:Uid` in XAML. Language selector in Settings; **in-process** switch (no restart) via `App.SwitchLanguage` + `Loc.Reset`.
+- `Language` and `AdvancedMode` settings in `Settings.cs` (pure Parse/ToIni + tests). `GetDpiForWindow` P/Invoke. `InvariantGlobalization=false`. `Assets/AppLogo.png`.
+- Tests: **53** (added Language + AdvancedMode round-trips).
+
 ### [1.0.1] — 2026-05-29
 **Fixed — the GUI now launches** (it previously fail-fasted with no window). Four root causes:
 - Switched from `PublishSingleFile` to **self-contained folder deployment** (single-file extracted WinAppSDK native DLLs to `%TEMP%` and crashed on load). Release asset is now `gdriveHandler-x64.zip`.
@@ -411,3 +441,51 @@ See [ROADMAP.md](ROADMAP.md) for the full feature list, v2.0 ideas, and known li
 - Bump version in **both** `gdriveHandler.csproj` and `Core/AppConstants.cs`.
 - Run `build.ps1` (full, with tests) before tagging a release.
 - After any GUI change, launch the published exe and confirm a window appears (the log shows the init sequence; a crash shows the XAML error).
+
+---
+
+## 17. Phase 2 — MSIX packaging + self-signed signing (PLANNED, not yet implemented)
+
+> Phase 1 (GUI overhaul + Türkçe, shipped in 1.1.0) was done on the current **unpackaged** folder/zip model. Phase 2 migrates distribution to a **signed MSIX** and is intended to be implemented next. It rewrites the install model, so the in-app Advanced "management" buttons (install/repair/uninstall) become Windows-managed and must be revised. Decisions already made: **free self-signed cert** stored as a GitHub Actions secret; keep the zip as a fallback channel.
+
+### 17.1 Single-project MSIX
+- Add `src/gdriveHandler/Package.appxmanifest`: Identity (`Name`/`Publisher` **must match** the signing cert subject), DisplayName, visual assets (`Square44x44Logo`, `Square150x150Logo`, `StoreLogo`, splash — generate from the icon), and a `<uap:Extension Category="windows.fileTypeAssociation">` block declaring **all 11 extensions** (`.gdoc .gsheet .gslides .gdraw .gform .gscript .gmap .glink .gsite .gtable .gjam` — from `AppConstants.AllExtensions`).
+- `gdriveHandler.csproj`: remove `<WindowsPackageType>None</WindowsPackageType>` (→ packaged), keep `EnableMsixTooling=true` and `WindowsAppSDKSelfContained=true`, configure `GenerateAppxPackageOnBuild` for CI.
+
+### 17.2 Activation refactor (`Program.cs`)
+Packaged file-association launches do NOT arrive via `args[]`. Use `Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs()`:
+- `ExtendedActivationKind.File` → `FileActivatedEventArgs.Files[0].Path` → existing `HandleFile` headless fast path (must still **not** init WinUI).
+- `Launch`/no file → GUI. Preserve the dual-mode speed guarantee (§3).
+
+### 17.3 Writable paths (`Core/AppConstants.cs`)
+MSIX installs read-only under `WindowsApps`. Move `config.ini` + `logs\` to **`%LOCALAPPDATA%\gdriveHandler\`** (outside the install dir) for both packaged and unpackaged builds. Bonus: fixes the "uninstall wipes config/aliases" trade-off in §6.
+
+### 17.4 Installer changes (`Installer/Installer.cs` + GUI)
+Under MSIX, associations are declarative and install/uninstall are Windows-managed. The Advanced → "Setup & management" section becomes "Managed by Windows" + a button to open Apps & Features; the registry `RegisterProgId/RegisterExtensions/WriteUninstallEntry` path is kept only for the legacy unpackaged build (or removed if MSIX becomes the sole channel).
+
+### 17.5 Self-signed signing (free) — exact steps
+1. **Generate once:** `New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=devSpaceOB" -KeyUsage DigitalSignature -CertStoreLocation Cert:\CurrentUser\My` — `CN` **must equal** the manifest `Identity Publisher`. Export `.pfx` (password) and `.cer` (public).
+2. **GitHub secrets:** base64 the `.pfx` → `SIGNING_PFX_BASE64`; password → `SIGNING_PFX_PASSWORD`.
+3. **CI signs every build:** decode → `cert.pfx`, build MSIX, then `signtool sign /fd SHA256 /a /f cert.pfx /p <pwd> /tr http://timestamp.digicert.com /td SHA256 gdriveHandler.msix` (or `AppxPackageSigningEnabled=true` + thumbprint).
+4. **`install.ps1` (irm|iex):** download `.msix` + `.cer`; import `.cer` to `LocalMachine\TrustedPeople` (and `Root`) — prompts for admin once; then `Add-AppxPackage gdriveHandler.msix`. Manual: double-click `.cer` → Install to Trusted People, then double-click `.msix`.
+- Trade-off: self-signed still shows "unknown publisher"; importing the cert removes the *install* block. A paid OV/EV cert would remove SmartScreen entirely (deferred by choice).
+
+### 17.6 CI/CD & release assets (`.github/workflows/build.yml`, `build.ps1`, `install.ps1`)
+Produce: `gdriveHandler-<ver>-x64.msix` (primary, signed), `…-x64.cer` (public cert), `…-x64-selfcontained.zip` (portable fallback), `…-x64-fd.exe` (framework-dependent, tiny), `install.ps1`.
+
+### 17.7 Clean install-folder layout (root = 2 files, rest in `\files\`) — user request, best-effort
+Target on-disk layout for the **unpackaged folder / zip / `--install`** channel:
+```
+<install dir>\
+├── gdriveHandler.exe
+├── config.ini
+└── files\      ← everything else (runtime DLLs, WinAppSDK, gdriveHandler.pri, Assets, *.dll/*.json deps)
+```
+A literal 2-files-only root is hard: the apphost normally needs `gdriveHandler.dll` + `.runtimeconfig.json` + `.deps.json` beside it, and native WinAppSDK DLLs load from the exe dir.
+- **Recommended (robust):** relocate dependencies into `files\` — managed via `runtimeconfig` `additionalProbingPaths` → `files`; native via `SetDefaultDllDirectories` + `AddDllDirectory("<dir>\files")` at the **very top of `Main`** (cheap P/Invokes; must not slow the headless path). Yields root = exe + config + the small bootstrap trio, with the ~300-file bulk under `files\`.
+- **Literal 2-file root (fallback):** a tiny stub launcher that adds `files\` to the DLL search path and loads the real app in-process — only if the recommended approach can't hide the trio (a relaunch would violate the §3 fast-path rule).
+- For **MSIX** the internal layout is invisible to users, so this applies to the zip/`--install` channel; the MSIX keeps its standard layout.
+
+### 17.8 Phase 2 verification
+- Install folder shows `gdriveHandler.exe` + `config.ini` at root, `files\` holds the rest; GUI **and** headless file-open both work from the new layout.
+- Build + sign MSIX locally; install the signed `.msix` after trusting the `.cer`; opening a `.gdoc` launches the correct profile (headless path); uninstall via Windows Settings is clean and `%LOCALAPPDATA%\gdriveHandler\` aliases survive; `install.ps1` works end-to-end on a clean VM.

@@ -15,10 +15,10 @@ public sealed partial class AboutPage : Page
     private void PopulatePaths()
     {
         PathsPanel.Children.Clear();
-        AddPathRow("Install dir", AppConstants.InstallDir);
-        AddPathRow("Config file", AppConstants.ConfigFile);
-        AddPathRow("Log file", AppConstants.LogFile);
-        AddPathRow("System dir", AppConstants.SystemInstallDir);
+        AddPathRow(Loc.Get("AdvPathInstallDir"), AppConstants.InstallDir);
+        AddPathRow(Loc.Get("AdvPathConfigFile"), AppConstants.ConfigFile);
+        AddPathRow(Loc.Get("AdvPathLogFile"), AppConstants.LogFile);
+        AddPathRow(Loc.Get("AdvPathSystemDir"), AppConstants.SystemInstallDir);
     }
 
     private void AddPathRow(string label, string path)

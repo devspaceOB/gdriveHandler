@@ -4,63 +4,286 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Loaded="Page_Loaded">
 
-    <ScrollViewer Padding="32,24,32,24">
-        <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24,20,24,20" RowSpacing="16">
 
-            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+        <!-- Page title -->
+        <TextBlock x:Uid="SettingsTitle" Grid.Row="0"
+                   Style="{StaticResource TitleTextBlockStyle}"/>
 
-            <Border CornerRadius="8" Padding="16"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                <StackPanel Spacing="0">
+        <!-- Subtab selector -->
+        <SelectorBar x:Name="SubtabBar"
+                     Grid.Row="1"
+                     AutomationProperties.AutomationId="SettingsSubtabBar"
+                     SelectionChanged="SubtabBar_SelectionChanged">
+            <SelectorBarItem x:Name="SubtabGeneral"
+                             AutomationProperties.AutomationId="SubtabGeneral"
+                             Text="General"
+                             Tag="general"/>
+            <SelectorBarItem x:Name="SubtabAdvanced"
+                             AutomationProperties.AutomationId="SubtabAdvanced"
+                             Text="Advanced"
+                             Tag="advanced"
+                             Visibility="Collapsed"/>
+            <SelectorBarItem x:Name="SubtabLogs"
+                             AutomationProperties.AutomationId="SubtabLogs"
+                             Text="Logs"
+                             Tag="logs"
+                             Visibility="Collapsed"/>
+        </SelectorBar>
 
-                    <!-- Open in new window -->
-                    <Grid Padding="0,4,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Open in new window"/>
-                            <TextBlock Text="Adds --new-window flag when launching browser profile"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        <!-- Content panels — only one visible at a time -->
+        <ScrollViewer Grid.Row="2">
+            <StackPanel Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
+
+                <!-- ==================== GENERAL ==================== -->
+                <StackPanel x:Name="PanelGeneral" Spacing="16">
+
+                    <Border CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Padding="16"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <StackPanel Spacing="0">
+
+                            <!-- Open in new window -->
+                            <Grid Padding="0,8,0,8" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock x:Uid="SettingsNewWindowLabel"/>
+                                    <TextBlock x:Uid="SettingsNewWindowDesc"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                                <ToggleSwitch x:Name="ToggleNewWindow"
+                                             AutomationProperties.AutomationId="ToggleNewWindow"
+                                             Grid.Column="1"
+                                             MinWidth="0" OnContent="" OffContent=""
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Toggled="SettingToggled"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator/>
+
+                            <!-- Include Edge profiles -->
+                            <Grid Padding="0,8,0,8" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock x:Uid="SettingsEdgeLabel"/>
+                                    <TextBlock x:Uid="SettingsEdgeDesc"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                                <ToggleSwitch x:Name="ToggleEdge"
+                                             AutomationProperties.AutomationId="ToggleEdge"
+                                             Grid.Column="1"
+                                             MinWidth="0" OnContent="" OffContent=""
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Toggled="SettingToggled"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator/>
+
+                            <!-- Language -->
+                            <Grid Padding="0,8,0,8" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock x:Uid="SettingsLanguageLabel"/>
+                                    <TextBlock x:Uid="SettingsLanguageDesc"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                                <ComboBox x:Name="LanguageCombo"
+                                          AutomationProperties.AutomationId="LanguageCombo"
+                                          Grid.Column="1"
+                                          MinWidth="140"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          SelectionChanged="LanguageCombo_SelectionChanged">
+                                    <ComboBoxItem Tag="en" Content="English"
+                                                  AutomationProperties.AutomationId="LangEnglish"/>
+                                    <ComboBoxItem Tag="tr" Content="Türkçe"
+                                                  AutomationProperties.AutomationId="LangTurkish"/>
+                                </ComboBox>
+                            </Grid>
+
+                            <MenuFlyoutSeparator/>
+
+                            <!-- Advanced mode toggle -->
+                            <Grid Padding="0,8,0,8" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock x:Uid="SettingsAdvancedModeLabel"/>
+                                    <TextBlock x:Uid="SettingsAdvancedModeDesc"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                                <ToggleSwitch x:Name="ToggleAdvanced"
+                                             AutomationProperties.AutomationId="ToggleAdvancedMode"
+                                             Grid.Column="1"
+                                             MinWidth="0" OnContent="" OffContent=""
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Toggled="ToggleAdvanced_Toggled"/>
+                            </Grid>
+
                         </StackPanel>
-                        <ToggleSwitch x:Name="ToggleNewWindow"
-                                      AutomationProperties.AutomationId="ToggleNewWindow"
-                                      Grid.Column="1" OnContent="" OffContent=""
-                                      Margin="16,0,0,0"/>
-                    </Grid>
+                    </Border>
 
-                    <MenuFlyoutSeparator Margin="0,4,0,4"/>
+                    <!-- Inline "Saved" confirmation -->
+                    <TextBlock x:Name="SavedConfirm"
+                               x:Uid="SettingsSavedConfirm"
+                               Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                               Opacity="0"/>
 
-                    <!-- Include Edge profiles -->
-                    <Grid Padding="0,4,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Include Edge profiles"/>
-                            <TextBlock Text="Disable if Edge causes false-positive matches"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        </StackPanel>
-                        <ToggleSwitch x:Name="ToggleEdge"
-                                      AutomationProperties.AutomationId="ToggleEdge"
-                                      Grid.Column="1" OnContent="" OffContent=""
-                                      Margin="16,0,0,0"/>
-                    </Grid>
+                    <!-- Language-switch applying note -->
+                    <TextBlock x:Name="LangApplyingNote"
+                               AutomationProperties.AutomationId="LangApplyingNote"
+                               Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                               Visibility="Collapsed"/>
 
                 </StackPanel>
-            </Border>
 
-            <Button x:Name="BtnSave"
-                    AutomationProperties.AutomationId="BtnSaveSettings"
-                    Content="Save settings"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Click="BtnSave_Click"/>
+                <!-- ==================== ADVANCED ==================== -->
+                <StackPanel x:Name="PanelAdvanced" Spacing="16" Visibility="Collapsed">
 
-        </StackPanel>
-    </ScrollViewer>
+                    <!-- Setup & Management -->
+                    <TextBlock x:Uid="AdvSetupTitle"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <Border CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Padding="16"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="AdvBtnInstallUser"
+                                    x:Uid="AdvBtnInstallUser"
+                                    AutomationProperties.AutomationId="AdvBtnInstallUser"
+                                    Style="{StaticResource AccentButtonStyle}"
+                                    Click="AdvBtnInstallUser_Click"/>
+                            <Button x:Name="AdvBtnInstallSystem"
+                                    x:Uid="AdvBtnInstallSystem"
+                                    AutomationProperties.AutomationId="AdvBtnInstallSystem"
+                                    Click="AdvBtnInstallSystem_Click"/>
+                            <Button x:Name="AdvBtnRepair"
+                                    x:Uid="AdvBtnRepair"
+                                    AutomationProperties.AutomationId="AdvBtnRepair"
+                                    Click="AdvBtnRepair_Click"/>
+                            <Button x:Name="AdvBtnReinstall"
+                                    x:Uid="AdvBtnReinstall"
+                                    AutomationProperties.AutomationId="AdvBtnReinstall"
+                                    Click="AdvBtnReinstall_Click"/>
+                            <Button x:Name="AdvBtnUninstall"
+                                    x:Uid="AdvBtnUninstall"
+                                    AutomationProperties.AutomationId="AdvBtnUninstall"
+                                    Click="AdvBtnUninstall_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Maintenance -->
+                    <TextBlock x:Uid="AdvMaintenanceTitle"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <Border CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Padding="16"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="AdvBtnOpenConfig"
+                                    x:Uid="AdvBtnOpenConfig"
+                                    AutomationProperties.AutomationId="AdvBtnOpenConfig"
+                                    Click="AdvBtnOpenConfig_Click"/>
+                            <Button x:Name="AdvBtnOpenLogs"
+                                    x:Uid="AdvBtnOpenLogs"
+                                    AutomationProperties.AutomationId="AdvBtnOpenLogs"
+                                    Click="AdvBtnOpenLogs_Click"/>
+                            <Button x:Name="AdvBtnDiagnose"
+                                    x:Uid="AdvBtnDiagnose"
+                                    AutomationProperties.AutomationId="AdvBtnDiagnose"
+                                    Click="AdvBtnDiagnose_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Paths -->
+                    <TextBlock x:Uid="AdvPathsTitle"
+                               Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <Border CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Padding="16"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <StackPanel x:Name="AdvPathsPanel" Spacing="8"/>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- ==================== LOGS ==================== -->
+                <Grid x:Name="PanelLogs"
+                      RowDefinitions="Auto,300,Auto"
+                      RowSpacing="8"
+                      Visibility="Collapsed">
+
+                    <!-- Log toolbar -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8">
+                        <TextBlock x:Uid="LogsTitle"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   VerticalAlignment="Center"/>
+                        <Button x:Uid="LogsBtnRefresh"
+                                AutomationProperties.AutomationId="LogsBtnRefresh"
+                                Click="LogsBtnRefresh_Click"
+                                VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Log content -->
+                    <Border Grid.Row="1"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <ScrollViewer x:Name="LogScroller"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto">
+                            <TextBox x:Name="LogText"
+                                     AutomationProperties.AutomationId="LogTextBox"
+                                     IsReadOnly="True" AcceptsReturn="True"
+                                     FontFamily="Consolas" FontSize="12"
+                                     TextWrapping="NoWrap"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     Padding="12"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Log footer -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8">
+                        <Button x:Uid="LogsBtnOpenNotepad"
+                                AutomationProperties.AutomationId="LogsBtnOpenNotepad"
+                                Click="LogsBtnOpenNotepad_Click"/>
+                        <Button x:Uid="LogsBtnOpenFolder"
+                                AutomationProperties.AutomationId="LogsBtnOpenFolder"
+                                Click="LogsBtnOpenFolder_Click"/>
+                        <Button x:Uid="LogsBtnClear"
+                                AutomationProperties.AutomationId="LogsBtnClear"
+                                Click="LogsBtnClear_Click"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
 </Page>

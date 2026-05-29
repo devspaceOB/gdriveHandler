@@ -182,6 +182,120 @@ public class SettingsTests
         Assert.Equal("mapped@other.com", s.ResolveAlias("  user@domain.com  "));
     }
 
+    // ------------------------------------------------------------------ language setting
+
+    [Fact]
+    public void RoundTrip_Language_En_PreservesValue()
+    {
+        var original = new Settings { Language = "en" };
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.Equal("en", parsed.Language);
+    }
+
+    [Fact]
+    public void RoundTrip_Language_Tr_PreservesValue()
+    {
+        var original = new Settings { Language = "tr" };
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.Equal("tr", parsed.Language);
+    }
+
+    [Fact]
+    public void Parse_Language_Tr_CaseInsensitive()
+    {
+        var s = Settings.Parse("[settings]\nlanguage=TR\n");
+        Assert.Equal("tr", s.Language);
+    }
+
+    [Fact]
+    public void Parse_Language_UnknownValue_FallsBackToEn()
+    {
+        var s = Settings.Parse("[settings]\nlanguage=fr\n");
+        Assert.Equal("en", s.Language);
+    }
+
+    [Fact]
+    public void Parse_Language_Missing_DefaultsToEn()
+    {
+        var s = Settings.Parse("[settings]\nopenInNewWindow=false\n");
+        Assert.Equal("en", s.Language);
+    }
+
+    [Fact]
+    public void RoundTrip_Language_DoesNotBreakExistingKeys()
+    {
+        var original = new Settings
+        {
+            OpenInNewWindow = true,
+            IncludeEdge = false,
+            Language = "tr",
+        };
+        original.Aliases["a@b.com"] = "c@d.com";
+
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.True(parsed.OpenInNewWindow);
+        Assert.False(parsed.IncludeEdge);
+        Assert.Equal("tr", parsed.Language);
+        Assert.Equal("c@d.com", parsed.Aliases["a@b.com"]);
+    }
+
+    // ------------------------------------------------------------------ advanced mode
+
+    [Fact]
+    public void RoundTrip_AdvancedMode_True_PreservesValue()
+    {
+        var original = new Settings { AdvancedMode = true };
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.True(parsed.AdvancedMode);
+    }
+
+    [Fact]
+    public void RoundTrip_AdvancedMode_False_PreservesValue()
+    {
+        var original = new Settings { AdvancedMode = false };
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.False(parsed.AdvancedMode);
+    }
+
+    [Fact]
+    public void Parse_AdvancedMode_Missing_DefaultsFalse()
+    {
+        var s = Settings.Parse("[settings]\nopenInNewWindow=false\n");
+        Assert.False(s.AdvancedMode);
+    }
+
+    [Fact]
+    public void RoundTrip_AdvancedMode_DoesNotBreakExistingKeys()
+    {
+        var original = new Settings
+        {
+            OpenInNewWindow = true,
+            IncludeEdge = false,
+            Language = "tr",
+            AdvancedMode = true,
+        };
+        original.Aliases["x@b.com"] = "y@d.com";
+
+        var ini = Settings.ToIni(original);
+        var parsed = Settings.Parse(ini);
+
+        Assert.True(parsed.OpenInNewWindow);
+        Assert.False(parsed.IncludeEdge);
+        Assert.Equal("tr", parsed.Language);
+        Assert.True(parsed.AdvancedMode);
+        Assert.Equal("y@d.com", parsed.Aliases["x@b.com"]);
+    }
+
     // ------------------------------------------------------------------ ToIni format checks
 
     [Fact]
@@ -191,6 +305,7 @@ public class SettingsTests
         Assert.Contains("[settings]", ini);
         Assert.Contains("openInNewWindow=", ini);
         Assert.Contains("includeEdge=", ini);
+        Assert.Contains("advancedMode=", ini);
     }
 
     [Fact]

@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
     <UseWinUI>true</UseWinUI>
@@ -17,7 +17,7 @@
     <!-- Disable auto-generated Main so Program.cs keeps the entry point -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <!-- Version / identity -->
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Company>devSpaceOB</Company>
     <Product>gdriveHandler</Product>
     <AssemblyTitle>gdriveHandler</AssemblyTitle>
@@ -36,6 +36,22 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
+  </ItemGroup>
+
+  <!-- Localization resource files are auto-discovered from Strings\**\*.resw by the
+       WinUI/WinAppSDK build targets (EnableDefaultPriItems=true by default).
+       No explicit PRIResource items needed here. -->
+
+  <!-- App logo PNG for use in XAML Image controls (title bar, Home hero, About) -->
+  <ItemGroup>
+    <Content Include="Assets\AppLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- App.ico must also be copied to output so AppWindow.SetIcon (taskbar/thumbnail
+         icon) can find it at runtime; <ApplicationIcon> only embeds it into the exe. -->
+    <Content Include="Assets\App.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

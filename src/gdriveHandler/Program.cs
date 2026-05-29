@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.UI.Dispatching;
+using Microsoft.Windows.Globalization;
 using WinRT;
 
 namespace GdriveHandler;
@@ -75,6 +76,20 @@ internal static class Program
         // framework-package lookup needed (calling Bootstrap.Initialize here would
         // fail because self-contained apps register no framework package).
         // Only reached on the GUI path — the file-handling hot path never gets here.
+
+        // Apply the saved language preference before WinUI initializes so that
+        // MRT Core resolves the correct resource candidate set for this session.
+        // The headless file-handling path never reaches this point.
+        try
+        {
+            var savedLang = Settings.Load().Language;
+            ApplicationLanguages.PrimaryLanguageOverride = savedLang == "tr" ? "tr" : "en";
+        }
+        catch
+        {
+            // Language override is best-effort; a failure must never block the GUI.
+        }
+
         ComWrappersSupport.InitializeComWrappers();
         Application.Start(p =>
         {

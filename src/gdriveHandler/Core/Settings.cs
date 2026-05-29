@@ -30,6 +30,18 @@ internal sealed class Settings
     public bool IncludeEdge { get; set; } = true;
 
     /// <summary>
+    /// UI language preference. Accepted values: "en" (English) and "tr" (Türkçe).
+    /// Default: "en".
+    /// </summary>
+    public string Language { get; set; } = "en";
+
+    /// <summary>
+    /// When true, the Settings page shows the Advanced and Logs subtabs, and the
+    /// Home page shows advanced management actions. Default: false.
+    /// </summary>
+    public bool AdvancedMode { get; set; } = false;
+
+    /// <summary>
     /// Email-to-email alias map (OrdinalIgnoreCase). Keys are "old" addresses that
     /// may appear in shortcut files; values are the current address stored in a
     /// browser profile.
@@ -118,6 +130,13 @@ internal sealed class Settings
                     case "includeedge":
                         result.IncludeEdge = ParseBool(value, true);
                         break;
+                    case "language":
+                        // Accept only known codes; unknown values silently fall back to "en".
+                        result.Language = value.Equals("tr", StringComparison.OrdinalIgnoreCase) ? "tr" : "en";
+                        break;
+                    case "advancedmode":
+                        result.AdvancedMode = ParseBool(value, false);
+                        break;
                 }
             }
             else if (section == "aliases")
@@ -141,6 +160,8 @@ internal sealed class Settings
         sb.AppendLine("[settings]");
         sb.AppendLine($"openInNewWindow={settings.OpenInNewWindow.ToString().ToLowerInvariant()}");
         sb.AppendLine($"includeEdge={settings.IncludeEdge.ToString().ToLowerInvariant()}");
+        sb.AppendLine($"language={settings.Language}");
+        sb.AppendLine($"advancedMode={settings.AdvancedMode.ToString().ToLowerInvariant()}");
 
         sb.AppendLine();
         sb.AppendLine("[aliases]");
