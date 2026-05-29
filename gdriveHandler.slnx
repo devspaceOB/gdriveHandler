@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/gdriveHandler/gdriveHandler.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/gdriveHandler.Tests/gdriveHandler.Tests.csproj" />
+  </Folder>
+</Solution>

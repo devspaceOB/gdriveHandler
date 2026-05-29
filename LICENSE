@@ -1,0 +1,40 @@
+gdriveHandler Personal Use License
+Version 1.0, May 2026
+
+Copyright (c) 2026 devSpaceOB
+
+TERMS AND CONDITIONS
+
+1. GRANT OF LICENSE
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software ("gdriveHandler"), to use, copy, and modify it solely for
+   personal, non-commercial purposes, subject to the conditions below.
+
+2. PERMITTED USES
+   - Installing and running gdriveHandler on your own personal devices.
+   - Modifying the source code for your own personal use.
+   - Sharing the unmodified source code or release binaries with attribution.
+   - Contributing modifications back to the original repository.
+
+3. RESTRICTIONS
+   - Commercial use of any kind is prohibited without explicit written permission
+     from the copyright holder. This includes, but is not limited to: selling,
+     sublicensing, bundling in a commercial product or service, or deploying in a
+     corporate environment for operational purposes.
+   - Redistribution of modified versions is permitted only if the modified source
+     is made publicly available under these same terms and clearly attributed.
+
+4. ATTRIBUTION
+   Any redistribution, modified or unmodified, must retain this license notice
+   and give appropriate credit to the original author (devSpaceOB).
+
+5. DISCLAIMER
+   THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+6. CONTACT
+   For commercial licensing inquiries: https://github.com/devspaceOB

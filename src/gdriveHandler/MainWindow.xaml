@@ -1,0 +1,39 @@
+<Window
+    x:Class="GdriveHandler.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="gdriveHandler">
+
+    <Grid>
+        <NavigationView x:Name="NavView"
+            AutomationProperties.AutomationId="NavView"
+            PaneDisplayMode="Left"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            CompactModeThresholdWidth="720"
+            ExpandedModeThresholdWidth="900"
+            SelectionChanged="NavView_SelectionChanged"
+            Loaded="NavView_Loaded">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Tag="home" Icon="Home" Content="Home"
+                    AutomationProperties.AutomationId="NavHome"/>
+                <NavigationViewItem Tag="guide" Icon="Help" Content="Guide"
+                    AutomationProperties.AutomationId="NavGuide"/>
+                <NavigationViewItem Tag="aliases" Icon="ContactInfo" Content="Aliases"
+                    AutomationProperties.AutomationId="NavAliases"/>
+                <NavigationViewItem Tag="settings" Icon="Setting" Content="Settings"
+                    AutomationProperties.AutomationId="NavSettings"/>
+                <NavigationViewItem Tag="logs" Icon="Document" Content="Logs"
+                    AutomationProperties.AutomationId="NavLogs"/>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Tag="about" Icon="Info" Content="About"
+                    AutomationProperties.AutomationId="NavAbout"/>
+            </NavigationView.FooterMenuItems>
+
+            <Frame x:Name="ContentFrame" Margin="0"/>
+        </NavigationView>
+    </Grid>
+</Window>

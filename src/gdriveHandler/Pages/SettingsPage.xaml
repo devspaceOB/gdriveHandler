@@ -1,0 +1,66 @@
+<Page
+    x:Class="GdriveHandler.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Loaded="Page_Loaded">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+
+            <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+
+            <Border CornerRadius="8" Padding="16"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <StackPanel Spacing="0">
+
+                    <!-- Open in new window -->
+                    <Grid Padding="0,4,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="Open in new window"/>
+                            <TextBlock Text="Adds --new-window flag when launching browser profile"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleNewWindow"
+                                      AutomationProperties.AutomationId="ToggleNewWindow"
+                                      Grid.Column="1" OnContent="" OffContent=""
+                                      Margin="16,0,0,0"/>
+                    </Grid>
+
+                    <MenuFlyoutSeparator Margin="0,4,0,4"/>
+
+                    <!-- Include Edge profiles -->
+                    <Grid Padding="0,4,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="Include Edge profiles"/>
+                            <TextBlock Text="Disable if Edge causes false-positive matches"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleEdge"
+                                      AutomationProperties.AutomationId="ToggleEdge"
+                                      Grid.Column="1" OnContent="" OffContent=""
+                                      Margin="16,0,0,0"/>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+
+            <Button x:Name="BtnSave"
+                    AutomationProperties.AutomationId="BtnSaveSettings"
+                    Content="Save settings"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="BtnSave_Click"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

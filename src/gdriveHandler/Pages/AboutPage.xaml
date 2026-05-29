@@ -1,0 +1,60 @@
+<Page
+    x:Class="GdriveHandler.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+
+            <!-- App header -->
+            <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                <Border Width="64" Height="64" CornerRadius="12"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}">
+                    <TextBlock Text="G" FontSize="32" HorizontalAlignment="Center"
+                               VerticalAlignment="Center" Foreground="White"
+                               FontWeight="SemiBold"/>
+                </Border>
+                <StackPanel Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="gdriveHandler" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock x:Name="VersionText"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock Text="by devSpaceOB"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Description -->
+            <TextBlock TextWrapping="Wrap">
+                Opens Google Workspace shortcut files in the Chrome or Edge profile signed in
+                with the account embedded in the file.
+            </TextBlock>
+
+            <HyperlinkButton AutomationProperties.AutomationId="GitHubLink"
+                             Content="View on GitHub"
+                             NavigateUri="https://github.com/devspaceOB/gdriveHandler"/>
+
+            <!-- Paths -->
+            <TextBlock Text="Paths" Style="{StaticResource BodyStrongTextBlockStyle}"
+                       Margin="0,8,0,0"/>
+            <StackPanel x:Name="PathsPanel" Spacing="4"/>
+
+            <!-- License -->
+            <TextBlock Text="License" Style="{StaticResource BodyStrongTextBlockStyle}"
+                       Margin="0,8,0,0"/>
+            <TextBlock TextWrapping="Wrap"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                Free for personal use. See LICENSE file for details.
+            </TextBlock>
+
+            <!-- Icon note -->
+            <TextBlock Text="Icon note" Style="{StaticResource BodyStrongTextBlockStyle}"
+                       Margin="0,8,0,0"/>
+            <TextBlock TextWrapping="Wrap"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                The bundled icon is a recolored, derivative Drive-style mark. Acceptable for
+                personal use; replace with a fully original icon before any public distribution.
+            </TextBlock>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
