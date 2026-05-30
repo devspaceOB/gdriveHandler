@@ -89,7 +89,7 @@ internal static class Installer
         foreach (var ext in AppConstants.AllExtensions)
         {
             if (!registrations.TryGetValue(ext, out var progId) ||
-                !string.Equals(progId, AppConstants.ProgId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(progId, AppConstants.ProgIdForExtension(ext), StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
@@ -165,7 +165,7 @@ internal static class Installer
             var dest = AppConstants.InstalledExePath;
             CopyAppFolder(AppConstants.InstallDir, log);
 
-            RegisterProgId(Registry.CurrentUser, ClassesRoot, dest, log);
+            RegisterProgIds(Registry.CurrentUser, ClassesRoot, dest, log);
             RegisterExtensions(Registry.CurrentUser, ClassesRoot, log);
             WriteUninstallEntry(Registry.CurrentUser, UninstallSubKey, dest, AppConstants.InstallDir, log);
             CreateShortcut(UserStartMenuLinkPath, dest, log);
@@ -196,7 +196,7 @@ internal static class Installer
             var dest = AppConstants.SystemExePath;
             CopyAppFolder(AppConstants.SystemInstallDir, log);
 
-            RegisterProgId(Registry.LocalMachine, HklmClassesRoot, dest, log);
+            RegisterProgIds(Registry.LocalMachine, HklmClassesRoot, dest, log);
             RegisterExtensions(Registry.LocalMachine, HklmClassesRoot, log);
             WriteUninstallEntry(Registry.LocalMachine, HklmUninstallSubKey, dest, AppConstants.SystemInstallDir, log);
             CreateShortcut(SystemStartMenuLinkPath, dest, log);
@@ -343,22 +343,28 @@ internal static class Installer
 
     // ----- shared registry helpers -----
 
-    private static void RegisterProgId(RegistryKey hive, string classesPath, string exePath, Logger log)
+    private static void RegisterProgIds(RegistryKey hive, string classesPath, string exePath, Logger log)
     {
-        using var progid = hive.CreateSubKey($@"{classesPath}\{AppConstants.ProgId}");
-        progid.SetValue(null, AppConstants.ProgIdDescription);
+        hive.DeleteSubKeyTree($@"{classesPath}\{AppConstants.ProgId}", throwOnMissingSubKey: false);
 
-        using (var icon = progid.CreateSubKey("DefaultIcon"))
+        foreach (var ext in AppConstants.AllExtensions)
         {
-            icon.SetValue(null, ResolveDefaultIcon(exePath));
+            var progId = AppConstants.ProgIdForExtension(ext);
+            using var progid = hive.CreateSubKey($@"{classesPath}\{progId}");
+            progid.SetValue(null, AppConstants.DescriptionForExtension(ext));
+
+            using (var icon = progid.CreateSubKey("DefaultIcon"))
+            {
+                icon.SetValue(null, ResolveIcon(exePath, ext));
+            }
+
+            using (var cmd = progid.CreateSubKey(@"shell\open\command"))
+            {
+                cmd.SetValue(null, $"\"{exePath}\" \"%1\"");
+            }
         }
 
-        using (var cmd = progid.CreateSubKey(@"shell\open\command"))
-        {
-            cmd.SetValue(null, $"\"{exePath}\" \"%1\"");
-        }
-
-        log.Info("Registered ProgID.");
+        log.Info($"Registered {AppConstants.AllExtensions.Count} extension ProgIDs.");
     }
 
     private static void RegisterExtensions(RegistryKey hive, string classesPath, Logger log)
@@ -366,10 +372,12 @@ internal static class Installer
         foreach (var ext in AppConstants.AllExtensions)
         {
             using var extKey = hive.CreateSubKey($@"{classesPath}\{ext}");
-            extKey.SetValue(null, AppConstants.ProgId);
+            var progId = AppConstants.ProgIdForExtension(ext);
+            extKey.SetValue(null, progId);
 
             using var owp = extKey.CreateSubKey("OpenWithProgids");
-            owp.SetValue(AppConstants.ProgId, string.Empty, RegistryValueKind.String);
+            owp.SetValue(progId, string.Empty, RegistryValueKind.String);
+            owp.DeleteValue(AppConstants.ProgId, throwOnMissingValue: false);
         }
 
         log.Info($"Registered {AppConstants.AllExtensions.Count} file extensions.");
@@ -381,13 +389,20 @@ internal static class Installer
 
         foreach (var ext in AppConstants.AllExtensions)
         {
+            var progId = AppConstants.ProgIdForExtension(ext);
+            classesKey.DeleteSubKeyTree(progId, throwOnMissingSubKey: false);
+
             using (var owp = classesKey.OpenSubKey($@"{ext}\OpenWithProgids", writable: true))
             {
+                owp?.DeleteValue(progId, throwOnMissingValue: false);
                 owp?.DeleteValue(AppConstants.ProgId, throwOnMissingValue: false);
             }
 
             using var extKey = classesKey.OpenSubKey(ext, writable: true);
-            if (extKey?.GetValue(null) as string == AppConstants.ProgId)
+            var currentProgId = extKey?.GetValue(null) as string;
+            if (extKey != null &&
+                (string.Equals(currentProgId, progId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(currentProgId, AppConstants.ProgId, StringComparison.OrdinalIgnoreCase)))
             {
                 extKey.DeleteValue(string.Empty, throwOnMissingValue: false);
             }
@@ -423,56 +438,19 @@ internal static class Installer
         log.Info("Wrote uninstall entry.");
     }
 
-    /// <summary>
-    /// Prefer the locally-installed Google Drive icon (referenced by path, never
-    /// copied into our directory); otherwise use our own embedded icon.
-    /// </summary>
-    private static string ResolveDefaultIcon(string exePath)
+    internal static string ResolveIcon(string exePath, string extension)
     {
-        var drive = FindGoogleDriveExe();
-        return drive != null ? $"{drive},0" : $"{exePath},0";
-    }
-
-    private static string? FindGoogleDriveExe()
-    {
-        var roots = new[]
+        var exeDir = Path.GetDirectoryName(exePath);
+        if (!string.IsNullOrEmpty(exeDir))
         {
-            Environment.GetEnvironmentVariable("ProgramFiles"),
-            Environment.GetEnvironmentVariable("ProgramFiles(x86)"),
-        };
-
-        foreach (var root in roots)
-        {
-            if (string.IsNullOrEmpty(root))
+            var iconPath = Path.Combine(exeDir, AppConstants.IconAssetForExtension(extension));
+            if (File.Exists(iconPath))
             {
-                continue;
-            }
-
-            var dfsDir = Path.Combine(root, "Google", "Drive File Stream");
-            if (!Directory.Exists(dfsDir))
-            {
-                continue;
-            }
-
-            try
-            {
-                // GoogleDriveFS.exe lives under a versioned subfolder.
-                var exe = Directory
-                    .EnumerateFiles(dfsDir, "GoogleDriveFS.exe", SearchOption.AllDirectories)
-                    .OrderByDescending(f => f, StringComparer.OrdinalIgnoreCase)
-                    .FirstOrDefault();
-                if (exe != null)
-                {
-                    return exe;
-                }
-            }
-            catch
-            {
-                // Permission/enumeration issue: fall back to our own icon.
+                return $"{iconPath},0";
             }
         }
 
-        return null;
+        return $"{exePath},0";
     }
 
     // ----- shortcut helpers -----

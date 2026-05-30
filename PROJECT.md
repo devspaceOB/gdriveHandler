@@ -3,7 +3,7 @@
 > **Single source of truth for this project.** This document captures the goals, architecture, tech stack, build/deploy process, hard-won gotchas, and changelog. It is detailed enough to rebuild a near-identical project from scratch, and to onboard future iteration.
 
 - **Repo:** https://github.com/devspaceOB/gdriveHandler
-- **Current version:** 1.1.5
+- **Current version:** 1.2.0
 - **Author / publisher:** devSpaceOB (devspaceob@gmail.com)
 - **License:** Personal Use (free for personal, non-commercial use) — see [LICENSE](LICENSE)
 - **Platform:** Windows 10 (1809+) / Windows 11, x64
@@ -166,7 +166,7 @@ gdriveHandler/
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
     <UseWinUI>true</UseWinUI>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-    <Version>1.1.5</Version>
+    <Version>1.2.0</Version>
     <Company>devSpaceOB</Company>
     <Product>gdriveHandler</Product>
     <AssemblyTitle>gdriveHandler</AssemblyTitle>
@@ -373,7 +373,7 @@ irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install.ps1 
 ```
 `install.ps1` fetches the latest self-contained release zip, extracts it, and runs `gdriveHandler.exe --install`.
 
-### Current 1.1.5 release shape
+### Current 1.2.0 release shape
 Public releases expose only `gdriveHandler-<ver>-x64-selfcontained.zip`, `gdriveHandler-<ver>-x64-fd.exe`, and `install.ps1`. MSIX build support remains in the repo but is hidden from public release assets.
 
 ### First-launch self install
@@ -395,6 +395,17 @@ See [ROADMAP.md](ROADMAP.md) for the full feature list, v2.0 ideas, and known li
 ## 15. Changelog
 
 > Format: [Keep a Changelog](https://keepachangelog.com/) style. Newest first. Update on every release.
+
+### [1.2.0] - 2026-05-30
+**File icon release.**
+
+**Changed**
+- Legacy installs now register per-extension ProgIDs so Windows can apply distinct file icons.
+- Google Docs, Sheets, Slides, Forms, Sites, and Drive shortcut files use bundled ICO assets; extensions without a matching icon fall back to the app icon.
+
+**Added**
+- New file icon assets generated from the Google Workspace PNG sources.
+- Tests: **66** (added icon mapping and installer icon resolution coverage).
 
 ### [1.1.5] — 2026-05-30
 **Zip-only self-install release.**
@@ -507,7 +518,7 @@ A literal 2-files-only root is hard: the apphost normally needs `gdriveHandler.d
 
 ### 17.8 Phase 2 verification
 - Portable clean-layout work in §17.7 is still deferred; current zip fallback keeps the normal WinUI folder layout, while config/logs live under `%LOCALAPPDATA%\gdriveHandler\`.
-- Internal MSIX builds can still be produced with `build.ps1 -IncludeMsix`; public 1.1.5 releases hide MSIX while the zip/IRM install path is validated.
+- Internal MSIX builds can still be produced with `build.ps1 -IncludeMsix`; public 1.2.0 releases hide MSIX while the zip/IRM install path is validated.
 
 ### 17.9 Implementation notes
 - `Package.appxmanifest` defines the MSIX identity (`devSpaceOB.gdriveHandler`, `CN=devSpaceOB`), full-trust desktop entry point, visual assets, and all 11 Google Workspace file associations.

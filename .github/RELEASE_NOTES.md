@@ -1,3 +1,7 @@
+## v1.2.0
+
+This release adds bundled file icons for Google Workspace shortcut types. Legacy installs now register per-extension ProgIDs so Windows can show distinct icons for Docs, Sheets, Slides, Forms, Sites, and Drive shortcuts; unsupported icon types fall back to the app icon.
+
 ## Downloads
 
 | File | Description |

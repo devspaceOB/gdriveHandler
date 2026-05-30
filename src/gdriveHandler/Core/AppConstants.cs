@@ -30,7 +30,8 @@ internal static class AppConstants
     public const string Publisher = "devSpaceOB";
     public const string ProgId = "devSpaceOB.gdriveHandler";
     public const string ProgIdDescription = "Google Workspace Shortcut";
-    public const string Version = "1.1.5";
+    public const string Version = "1.2.0";
+    public const string AppIconAsset = @"Assets\App.ico";
 
     /// <summary>Open a new browser window instead of a new tab. Default: new tab.</summary>
     public static readonly bool OpenInNewWindow = false;
@@ -58,6 +59,41 @@ internal static class AppConstants
     public static bool IsSupported(string extension) =>
         UrlTemplates.ContainsKey(extension) ||
         UrlOnlyExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+
+    public static string ProgIdForExtension(string extension) =>
+        $"{ProgId}.{extension.TrimStart('.').ToLowerInvariant()}";
+
+    public static string DescriptionForExtension(string extension) =>
+        ExtensionDescriptions.TryGetValue(extension, out var description)
+            ? description
+            : ProgIdDescription;
+
+    public static string IconAssetForExtension(string extension) =>
+        ExtensionIconAssets.TryGetValue(extension, out var icon)
+            ? icon
+            : AppIconAsset;
+
+    private static readonly IReadOnlyDictionary<string, string> ExtensionDescriptions =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [".gdoc"] = "Google Docs Shortcut",
+            [".gsheet"] = "Google Sheets Shortcut",
+            [".gslides"] = "Google Slides Shortcut",
+            [".gform"] = "Google Forms Shortcut",
+            [".gsite"] = "Google Sites Shortcut",
+            [".glink"] = "Google Drive Shortcut",
+        };
+
+    private static readonly IReadOnlyDictionary<string, string> ExtensionIconAssets =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [".gdoc"] = @"Assets\FileIcons\Docs.ico",
+            [".gsheet"] = @"Assets\FileIcons\Sheets.ico",
+            [".gslides"] = @"Assets\FileIcons\Slides.ico",
+            [".gform"] = @"Assets\FileIcons\Forms.ico",
+            [".gsite"] = @"Assets\FileIcons\Sites.ico",
+            [".glink"] = @"Assets\FileIcons\Drive.ico",
+        };
 
     // ----- Path helpers -----
 
