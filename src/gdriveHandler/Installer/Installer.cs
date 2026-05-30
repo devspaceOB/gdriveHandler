@@ -63,20 +63,43 @@ internal static class Installer
         return Install(log, systemWide: AppConstants.IsSystemInstall);
     }
 
-    public static ExitCode Uninstall(Logger log)
+    public static ExitCode Uninstall(Logger log, bool quiet = false)
     {
         if (AppConstants.IsPackaged)
         {
             return WindowsManagedInstall("uninstall", log);
         }
 
-        return AppConstants.IsSystemInstall ? UninstallSystem(log) : UninstallUser(log);
+        return AppConstants.IsSystemInstall ? UninstallSystem(log, quiet) : UninstallUser(log, quiet);
     }
 
     public static bool IsUserInstallHealthy()
     {
         var registrations = ReadUserExtensionRegistrations();
         return IsInstallHealthy(File.Exists(AppConstants.InstalledExePath), registrations);
+    }
+
+    public static bool IsUserInstallPresent() => File.Exists(AppConstants.InstalledExePath);
+
+    public static bool IsSystemInstallPresent() => File.Exists(AppConstants.SystemExePath);
+
+    public static bool IsAnyInstallPresent() => IsUserInstallPresent() || IsSystemInstallPresent();
+
+    public static bool IsRunningFromInstalledLocation() =>
+        IsInstalledExecutablePath(Environment.ProcessPath);
+
+    internal static bool IsInstalledExecutablePath(string? exePath)
+    {
+        if (string.IsNullOrWhiteSpace(exePath))
+        {
+            return false;
+        }
+
+        static string Normalize(string path) => Path.GetFullPath(path).TrimEnd('\\');
+        var current = Normalize(exePath);
+
+        return string.Equals(current, Normalize(AppConstants.InstalledExePath), StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(current, Normalize(AppConstants.SystemExePath), StringComparison.OrdinalIgnoreCase);
     }
 
     internal static bool IsInstallHealthy(bool installedExeExists, IReadOnlyDictionary<string, string?> registrations)
@@ -215,7 +238,7 @@ internal static class Installer
 
     // ----- per-user uninstall (HKCU) -----
 
-    private static ExitCode UninstallUser(Logger log)
+    private static ExitCode UninstallUser(Logger log, bool quiet)
     {
         try
         {
@@ -229,14 +252,17 @@ internal static class Installer
 
             Registry.CurrentUser.DeleteSubKeyTree(UninstallSubKey, throwOnMissingSubKey: false);
 
-            // Best-effort: remove Start-Menu shortcut.
-            // NOTE: config.ini is deliberately left in place so reinstalls keep aliases.
             RemoveShortcut(UserStartMenuLinkPath, log);
+            DeleteDirectory(AppConstants.DataDir, log);
 
             NotifyShell();
             ScheduleSelfDelete(AppConstants.InstallDir, log);
 
             log.Info("User uninstall complete.");
+            if (!quiet)
+            {
+                Ui.ShowInfo(AppConstants.DisplayName, "Uninstalled successfully.");
+            }
             return ExitCode.Success;
         }
         catch (Exception ex)
@@ -249,11 +275,11 @@ internal static class Installer
 
     // ----- system-wide uninstall (HKLM) -----
 
-    private static ExitCode UninstallSystem(Logger log)
+    private static ExitCode UninstallSystem(Logger log, bool quiet)
     {
         if (!IsRunningAsAdmin())
         {
-            return RelaunchAsAdmin("--uninstall", log);
+            return RelaunchAsAdmin(quiet ? "--uninstall --quiet" : "--uninstall", log);
         }
 
         try
@@ -268,11 +294,16 @@ internal static class Installer
 
             Registry.LocalMachine.DeleteSubKeyTree(HklmUninstallSubKey, throwOnMissingSubKey: false);
             RemoveShortcut(SystemStartMenuLinkPath, log);
+            DeleteDirectory(AppConstants.DataDir, log);
 
             NotifyShell();
             ScheduleSelfDelete(AppConstants.SystemInstallDir, log);
 
             log.Info("System uninstall complete.");
+            if (!quiet)
+            {
+                Ui.ShowInfo(AppConstants.DisplayName, "Uninstalled successfully.");
+            }
             return ExitCode.Success;
         }
         catch (Exception ex)
@@ -419,8 +450,8 @@ internal static class Installer
         key.SetValue("Publisher", AppConstants.Publisher);
         key.SetValue("InstallLocation", installDir);
         key.SetValue("DisplayIcon", exePath + ",0");
-        key.SetValue("UninstallString", $"\"{exePath}\" --uninstall");
-        key.SetValue("QuietUninstallString", $"\"{exePath}\" --uninstall");
+        key.SetValue("UninstallString", BuildUninstallString(exePath, quiet: false));
+        key.SetValue("QuietUninstallString", BuildUninstallString(exePath, quiet: true));
         key.SetValue("NoModify", 1, RegistryValueKind.DWord);
         key.SetValue("NoRepair", 1, RegistryValueKind.DWord);
         key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
@@ -437,6 +468,9 @@ internal static class Installer
 
         log.Info("Wrote uninstall entry.");
     }
+
+    internal static string BuildUninstallString(string exePath, bool quiet) =>
+        quiet ? $"\"{exePath}\" --uninstall --quiet" : $"\"{exePath}\" --uninstall";
 
     internal static string ResolveIcon(string exePath, string extension)
     {
@@ -501,6 +535,22 @@ internal static class Installer
         catch (Exception ex)
         {
             log.Warn($"Could not remove Start-Menu shortcut: {ex.Message}");
+        }
+    }
+
+    private static void DeleteDirectory(string path, Logger log)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+                log.Info($"Removed directory: {path}");
+            }
+        }
+        catch (Exception ex)
+        {
+            log.Warn($"Could not remove directory {path}: {ex.Message}");
         }
     }
 

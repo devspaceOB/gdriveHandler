@@ -30,7 +30,7 @@ internal static class AppConstants
     public const string Publisher = "devSpaceOB";
     public const string ProgId = "devSpaceOB.gdriveHandler";
     public const string ProgIdDescription = "Google Workspace Shortcut";
-    public const string Version = "1.2.0";
+    public const string Version = "1.2.1";
     public const string AppIconAsset = @"Assets\App.ico";
 
     /// <summary>Open a new browser window instead of a new tab. Default: new tab.</summary>

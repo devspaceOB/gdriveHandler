@@ -97,4 +97,29 @@ public class InstallHealthTests
 
         Assert.Equal($"{exePath},0", Installer.ResolveIcon(exePath, ".gdoc"));
     }
+
+    [Fact]
+    public void BuildUninstallCommands_UseQuietOnlyForQuietCommand()
+    {
+        var exePath = Path.Combine(Path.GetTempPath(), "gdriveHandler.exe");
+
+        Assert.Equal($"\"{exePath}\" --uninstall", Installer.BuildUninstallString(exePath, quiet: false));
+        Assert.Equal($"\"{exePath}\" --uninstall --quiet", Installer.BuildUninstallString(exePath, quiet: true));
+    }
+
+    [Fact]
+    public void IsInstalledExecutablePath_ReturnsTrue_ForKnownInstallLocations()
+    {
+        Assert.True(Installer.IsInstalledExecutablePath(AppConstants.InstalledExePath));
+        Assert.True(Installer.IsInstalledExecutablePath(AppConstants.SystemExePath));
+    }
+
+    [Fact]
+    public void IsInstalledExecutablePath_ReturnsFalse_ForPortableLocation()
+    {
+        var portableExe = Path.Combine(Path.GetTempPath(), "gdriveHandler", "gdriveHandler.exe");
+
+        Assert.False(Installer.IsInstalledExecutablePath(portableExe));
+        Assert.False(Installer.IsInstalledExecutablePath(null));
+    }
 }

@@ -198,6 +198,8 @@ public sealed partial class MainWindow : Window
         if (_installPromptShown ||
             AppConstants.IsPackaged ||
             _initialPage != "home" ||
+            Installer.IsRunningFromInstalledLocation() ||
+            Installer.IsAnyInstallPresent() ||
             Installer.IsUserInstallHealthy())
         {
             return;

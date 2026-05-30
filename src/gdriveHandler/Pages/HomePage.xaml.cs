@@ -24,8 +24,8 @@ public sealed partial class HomePage : Page
             return;
         }
 
-        var installed = Installer.IsUserInstallHealthy();
-        var systemInstalled = File.Exists(AppConstants.SystemExePath);
+        var installed = Installer.IsUserInstallHealthy() || Installer.IsUserInstallPresent();
+        var systemInstalled = Installer.IsSystemInstallPresent();
 
         if (installed)
         {

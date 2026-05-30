@@ -4,7 +4,7 @@
     Builds release artifacts for gdriveHandler.
 
 .DESCRIPTION
-    Produces the portable self-contained zip and a small framework-dependent exe.
+    Produces the portable self-contained zip and a framework-dependent zip.
     MSIX packaging is retained for later but hidden behind -IncludeMsix.
 
 .EXAMPLE
@@ -38,7 +38,8 @@ if (-not $version) { $version = "0.0.0" }
 $appDir    = Join-Path $dist "gdriveHandler-$version-x64-selfcontained"
 $zipPath   = Join-Path $dist "gdriveHandler-$version-x64-selfcontained.zip"
 $fdDir     = Join-Path $dist "gdriveHandler-$version-x64-fd"
-$fdExePath = Join-Path $dist "gdriveHandler-$version-x64-fd.exe"
+$fdZipPath = Join-Path $dist "gdriveHandler-$version-x64-fd.zip"
+$staleFdExePath = Join-Path $dist "gdriveHandler-$version-x64-fd.exe"
 $msixPath  = Join-Path $dist "gdriveHandler-$version-x64.msix"
 $cerPath   = Join-Path $dist "gdriveHandler-$version-x64.cer"
 
@@ -121,7 +122,7 @@ New-Item -ItemType Directory -Force -Path $dist | Out-Null
 foreach ($path in @($appDir, $fdDir, $msixBuildDir)) {
     if (Test-Path $path) { Remove-Item -Recurse -Force $path }
 }
-foreach ($path in @($zipPath, $fdExePath, $msixPath, $cerPath)) {
+foreach ($path in @($zipPath, $fdZipPath, $staleFdExePath, $msixPath, $cerPath)) {
     if (Test-Path $path) { Remove-Item -Force $path }
 }
 
@@ -142,7 +143,7 @@ if (-not (Test-Path $exe)) { throw "Expected output not found: $exe" }
 Write-Host "Zipping portable fallback..." -ForegroundColor Cyan
 Compress-Archive -Path "$appDir\*" -DestinationPath $zipPath -Force
 
-Write-Host "Publishing framework-dependent exe..." -ForegroundColor Cyan
+Write-Host "Publishing framework-dependent folder..." -ForegroundColor Cyan
 Invoke-Native dotnet @(
     "publish", $proj,
     "-c", $Configuration,
@@ -155,11 +156,10 @@ Invoke-Native dotnet @(
     "--nologo"
 )
 $fdPublishedExe = Join-Path $fdDir "gdriveHandler.exe"
-if (Test-Path $fdPublishedExe) {
-    Copy-Item $fdPublishedExe $fdExePath -Force
-} else {
-    Write-Host "Framework-dependent exe was not produced; skipping fd asset." -ForegroundColor Yellow
-}
+if (-not (Test-Path $fdPublishedExe)) { throw "Framework-dependent output was not produced: $fdPublishedExe" }
+
+Write-Host "Zipping framework-dependent folder..." -ForegroundColor Cyan
+Compress-Archive -Path "$fdDir\*" -DestinationPath $fdZipPath -Force
 
 if ($IncludeMsix) {
     Write-Host "Publishing MSIX..." -ForegroundColor Cyan

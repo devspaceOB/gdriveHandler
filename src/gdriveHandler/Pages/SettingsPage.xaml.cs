@@ -313,14 +313,7 @@ public sealed partial class SettingsPage : Page
     private async void AdvBtnReinstall_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         var log = new Logger();
-        // Reinstall = uninstall then install-for-me.
-        var unCode = Installer.Uninstall(log);
-        if (unCode != ExitCode.Success)
-        {
-            await ShowResultAsync(Loc.Get("AdvReinstallFailed"), success: false);
-            return;
-        }
-        var inCode = Installer.Install(log, systemWide: false);
+        var inCode = Installer.Repair(log);
         await ShowResultAsync(
             inCode == ExitCode.Success
                 ? Loc.Get("AdvReinstallSuccess")

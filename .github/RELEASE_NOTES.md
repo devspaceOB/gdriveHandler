@@ -1,3 +1,9 @@
+## v1.2.1
+
+This release hardens the PowerShell installer and uninstall flow. The installer now prefers the smaller framework-dependent zip only when .NET Desktop Runtime 10.x is present and the app passes a smoke test; otherwise it falls back to the self-contained zip. Uninstall now performs full cleanup of app files, app data, shortcuts, and app-owned registry entries.
+
+The app also detects installed copies more reliably, so the portable-folder install prompt no longer appears after a successful install.
+
 ## v1.2.0
 
 This release adds bundled file icons for Google Workspace shortcut types. Legacy installs now register per-extension ProgIDs so Windows can show distinct icons for Docs, Sheets, Slides, Forms, Sites, and Drive shortcuts; unsupported icon types fall back to the app icon.
@@ -7,8 +13,8 @@ This release adds bundled file icons for Google Workspace shortcut types. Legacy
 | File | Description |
 |------|-------------|
 | `gdriveHandler-<version>-x64-selfcontained.zip` | Portable app folder with .NET and Windows App SDK runtime files bundled. |
-| `gdriveHandler-<version>-x64-fd.exe` | Framework-dependent launcher asset for advanced/manual scenarios. |
-| `install.ps1` | PowerShell installer that downloads the zip and runs `gdriveHandler.exe --install`. |
+| `gdriveHandler-<version>-x64-fd.zip` | Smaller framework-dependent app folder for machines with .NET Desktop Runtime 10.x. |
+| `install.ps1` | PowerShell installer that auto-selects FD zip when safe, otherwise uses self-contained zip. |
 
 ## Quick Install
 
@@ -30,4 +36,4 @@ $s = irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install
 & ([scriptblock]::Create($s)) -Uninstall
 ```
 
-Settings and aliases live under `%LOCALAPPDATA%\gdriveHandler\` and survive uninstall/reinstall.
+Uninstall removes app files, file associations, logs, config, aliases, and app-owned registry entries.

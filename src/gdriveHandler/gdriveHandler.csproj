@@ -16,7 +16,7 @@
     <!-- Disable auto-generated Main so Program.cs keeps the entry point -->
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <!-- Version / identity -->
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Company>devSpaceOB</Company>
     <Product>gdriveHandler</Product>
     <AssemblyTitle>gdriveHandler</AssemblyTitle>

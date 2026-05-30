@@ -49,16 +49,20 @@ internal static class Program
             // Accept and ignore a trailing value form like "--scope=user".
             var mode = first.TrimStart('/').TrimStart('-').Split('=')[0].ToLowerInvariant();
             var hasSystem = args.Any(a => a.Equals("--system", StringComparison.OrdinalIgnoreCase));
+            var quiet = args.Any(a => a.Equals("--quiet", StringComparison.OrdinalIgnoreCase) ||
+                                      a.Equals("/quiet", StringComparison.OrdinalIgnoreCase));
             switch (mode)
             {
                 case "install":
                     return Installer.Install(log, systemWide: hasSystem);
                 case "uninstall":
-                    return Installer.Uninstall(log);
+                    return Installer.Uninstall(log, quiet);
                 case "repair":
                     return Installer.Repair(log);
                 case "diagnose":
                     return Diagnose(args.Length > 1 ? args[1] : null, log);
+                case "smoke-test":
+                    return ExitCode.Success;
                 case "settings":
                     return LaunchGui(initialPage: "settings");
                 case "help":
@@ -364,9 +368,10 @@ internal static class Program
             "  gdriveHandler <file>                  Open a shortcut file (normal handler use)" + Environment.NewLine +
             "  gdriveHandler --install               Install for the current user (no admin)" + Environment.NewLine +
             "  gdriveHandler --install --system      Install for all users (admin / UAC)" + Environment.NewLine +
-            "  gdriveHandler --uninstall             Remove associations and uninstall" + Environment.NewLine +
+            "  gdriveHandler --uninstall             Remove associations, app data, and uninstall" + Environment.NewLine +
             "  gdriveHandler --repair                Re-register associations" + Environment.NewLine +
             "  gdriveHandler --diagnose [file]       List browsers/profiles (and optionally parse a file)" + Environment.NewLine +
+            "  gdriveHandler --smoke-test            Verify runtime dependencies without UI" + Environment.NewLine +
             "  gdriveHandler --settings              Open the settings GUI" + Environment.NewLine +
             "  gdriveHandler --help                  Show this help" + Environment.NewLine + Environment.NewLine +
             "  (no args)                             Open the settings/info GUI" + Environment.NewLine + Environment.NewLine +

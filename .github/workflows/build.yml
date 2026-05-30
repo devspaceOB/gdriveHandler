@@ -37,5 +37,5 @@ jobs:
           prerelease: false
           files: |
             dist/gdriveHandler-*-x64-selfcontained.zip
-            dist/gdriveHandler-*-x64-fd.exe
+            dist/gdriveHandler-*-x64-fd.zip
             install.ps1

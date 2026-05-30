@@ -50,11 +50,11 @@ If you use multiple Google accounts, you know the frustration: double-click a `.
 irm https://raw.githubusercontent.com/devspaceOB/gdriveHandler/main/install.ps1 | iex
 ```
 
-Downloads the latest self-contained release and installs it for your user account. No admin required.
+Downloads the latest release and installs it for your user account. If the .NET Desktop Runtime 10.x is present, the installer uses the smaller framework-dependent package after a smoke test; otherwise it falls back to the self-contained package. No admin required.
 
 ### Option B — Manual
 
-1. Download **`gdriveHandler-x64.zip`** from the [latest release](https://github.com/devspaceOB/gdriveHandler/releases/latest)
+1. Download **`gdriveHandler-<version>-x64-selfcontained.zip`** from the [latest release](https://github.com/devspaceOB/gdriveHandler/releases/latest)
 2. Extract it anywhere, then run:
    ```
    gdriveHandler.exe --install
@@ -92,7 +92,7 @@ Open **gdriveHandler** from the Start Menu. The settings window has six pages:
 
 ### config.ini
 
-Located at `%LocalAppData%\Programs\gdriveHandler\config.ini` (user install).
+Located at `%LocalAppData%\gdriveHandler\config.ini` (user install).
 
 ```ini
 [settings]
@@ -105,7 +105,7 @@ user@gmail.com=user@domain.com
 old.name@gmail.com=new.name@company.org
 ```
 
-The config file is preserved on uninstall and reinstall.
+Uninstall removes app files, file associations, logs, config, and aliases. Use Repair/Reinstall inside the app when you want to refresh registrations without deleting settings.
 
 ---
 
@@ -117,7 +117,7 @@ gdriveHandler                      Open the settings GUI
 gdriveHandler --settings           Open the settings GUI (same as above)
 gdriveHandler --install            Install for current user (no admin)
 gdriveHandler --install --system   Install for all users (admin required)
-gdriveHandler --uninstall          Remove associations and uninstall
+gdriveHandler --uninstall          Remove associations, app data, and uninstall
 gdriveHandler --repair             Re-register file associations
 gdriveHandler --diagnose [file]    List browsers/profiles; optionally parse a file
 gdriveHandler --help               Show usage
@@ -144,9 +144,10 @@ gdriveHandler --help               Show usage
 
 | File | Download | Installed | Requirements |
 |------|----------|-----------|--------------|
-| `gdriveHandler-x64.zip` | ~84 MB | ~215 MB | Windows 10 1809+ / Windows 11 x64 — **nothing else needed** |
+| `gdriveHandler-<version>-x64-selfcontained.zip` | ~84 MB | ~215 MB | Windows 10 1809+ / Windows 11 x64 - **nothing else needed** |
+| `gdriveHandler-<version>-x64-fd.zip` | smaller | smaller | Windows 10/11 x64 plus .NET Desktop Runtime 10.x |
 
-The app is **self-contained**: it bundles the .NET 10 runtime and the Windows App SDK, so there are no prerequisites to install. It ships as a folder (exe + runtime DLLs) rather than a single `.exe`, because WinUI 3 single-file packaging extracts native DLLs to `%TEMP%` and crashes on launch — a folder is the supported, stable layout. Everything installs into one directory.
+The one-line installer selects the framework-dependent zip only when the required runtime is present and the app passes a smoke test. The self-contained zip bundles the .NET 10 runtime and Windows App SDK. Both variants ship as folders rather than a single `.exe`, because WinUI 3 needs its adjacent runtime files.
 
 ---
 
@@ -169,17 +170,15 @@ cd gdriveHandler
 # 2. Build both variants (runs tests first)
 .\build.ps1
 
-# 3. Self-contained exe is in dist\gdriveHandler-x64.exe
-# 4. Framework-dependent exe is in dist\gdriveHandler-x64-fd.exe
+# 3. Self-contained zip is in dist\gdriveHandler-<version>-x64-selfcontained.zip
+# 4. Framework-dependent zip is in dist\gdriveHandler-<version>-x64-fd.zip
 ```
 
 #### Build flags
 
 ```powershell
-.\build.ps1 -SkipTests              # Skip unit tests
-.\build.ps1 -SelfContainedOnly      # Build only the primary (self-contained) variant
-.\build.ps1 -FrameworkDependentOnly # Build only the secondary (fd) variant
-.\build.ps1 -Configuration Debug    # Debug build
+.\build.ps1 -SkipTests           # Skip unit tests
+.\build.ps1 -Configuration Debug # Debug build
 ```
 
 ### Project Layout
